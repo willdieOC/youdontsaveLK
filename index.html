@@ -19,6 +19,13 @@
             color: #33ff33;
             overflow-x: hidden;
             user-select: none;
+            transition: background-color 0.5s;
+        }
+
+        /* Класс смены темы на фиолетовую (Серафим) */
+        body.seraphim-theme {
+            background-color: #05020a !important;
+            color: #b57cff !important;
         }
 
         /* Эффект ЭЛТ-монитора */
@@ -31,6 +38,11 @@
             z-index: 99999;
             background-size: 100% 4px, 6px 100%;
             pointer-events: none;
+        }
+
+        /* Смена сетки сканирования ЭЛТ под фиолетовый экран */
+        body.seraphim-theme::before {
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06)) !important;
         }
 
         /* --- ЭКРАН 1: РЕТРО ПАЗЛ СИСТЕМА --- */
@@ -121,20 +133,23 @@
         }
         .confirm-btn:hover { background: #aaffaa; box-shadow: 0 0 20px #33ff33; }
 
+        /* Всплывающие окна описания пазлов */
         .puzzle-modal {
             position: absolute;
             top: 5%; left: 5%; width: 90%; height: 90%;
             background: #000500; border: 2px solid #33ff33;
             box-shadow: 0 0 40px rgba(0,255,0,0.5);
-            display: none; flex-direction: column; z-index: 1000;
+            display: none; /* Переключается скриптом */
+            flex-direction: column; 
+            z-index: 1000;
         }
-        .modal-header { background: #33ff33; color: #000; padding: 6px 12px; display: flex; justify-content: space-between; font-weight: bold; font-size: 12px; }
-        .modal-close { cursor: pointer; padding: 0 5px; }
+        .modal-header { background: #33ff33; color: #000; padding: 10px 14px; display: flex; justify-content: space-between; font-weight: bold; font-size: 13px; }
+        .modal-close { cursor: pointer; padding: 0 5px; font-weight: bold; }
         .modal-close:hover { background: #000; color: #33ff33; }
-        .modal-body { padding: 25px; font-size: 12px; line-height: 1.6; color: #33ff33; overflow-y: auto; flex-grow: 1; }
-        .crypto-dump { background: #021102; border: 1px solid #115511; padding: 15px; margin: 15px 0; color: #aaffaa; word-break: break-all; font-size: 13px; }
+        .modal-body { padding: 25px; font-size: 13px; line-height: 1.6; color: #33ff33; overflow-y: auto; flex-grow: 1; text-align: left; }
+        .crypto-dump { background: #021102; border: 1px solid #115511; padding: 15px; margin: 15px 0; color: #aaffaa; word-break: break-all; font-size: 14px; text-align: center; }
 
-        /* --- ЭКРАН 2: ПРОЦЕСС ХАКИНГА СЕРВЕРА (ФИОЛЕТОВАЯ ТЕМА) --- */
+        /* --- ЭКРАН 2: ПРОЦЕСС ХАКИНГА СЕРВЕРА --- */
         #main-site-screen {
             display: none;
             max-width: 1100px;
@@ -143,7 +158,6 @@
             flex-direction: column;
             gap: 20px;
             height: 100vh;
-            color: #b57cff;
         }
 
         header { border-bottom: 2px dashed #4b1c8a; padding-bottom: 15px; text-align: center; }
@@ -164,8 +178,7 @@
             padding: 20px;
         }
 
-        .status-row { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 10px; padding: 5px; background: rgba(255,255,255,0.02); }
-        .status-val { font-weight: bold; }
+        .status-row { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 10px; padding: 5px; background: rgba(255,255,255,0.02); color: #b57cff; }
         .status-safe { color: #00f5d4; }
         .status-danger { color: #ff0055; text-shadow: 0 0 5px #ff0055; }
 
@@ -184,8 +197,8 @@
             line-break: anywhere;
         }
 
-        /* Правая панель логов */
-        .log-console { background: #020005; border: 1px inset #331463; flex-grow: 1; padding: 10px; overflow-y: auto; font-size: 12px; line-height: 1.6; color: #9d4edd; }
+        /* Консоль логов */
+        .log-console { background: #020005; border: 1px inset #331463; flex-grow: 1; padding: 10px; overflow-y: auto; font-size: 12px; line-height: 1.6; color: #9d4edd; text-align: left; }
         .log-entry { margin-bottom: 8px; }
         .log-time { color: #5a2493; margin-right: 6px; }
         .log-warn { color: #ff9e00; }
@@ -195,7 +208,7 @@
 
         .input-box { display: flex; align-items: center; gap: 10px; margin-top: 10px; border-top: 1px solid #4b1c8a; padding-top: 10px; }
         .terminal-input { flex-grow: 1; background: transparent; border: none; outline: none; color: #00f5d4; font-family: inherit; font-size: 14px; border-bottom: 1px solid #5a2493; }
-        .manifesto { background: rgba(20, 5, 35, 0.9); border: 1px dashed #ff0055; padding: 12px; font-size: 13px; line-height: 1.4; color: #ffb3d1; text-align: center; }
+        .manifesto { background: rgba(20, 5, 35, 0.9); border: 1px dashed #ff0055; padding: 12px; font-size: 13px; line-height: 1.4; color: #ffb3d1; text-align: center; margin-top: 10px; }
     </style>
 </head>
 <body>
@@ -237,7 +250,7 @@
                     <p>Поток данных генератора Leaf разбился на бинарные пакеты. Анализ структуры выявил циклическую кодировку со смещением.</p>
                     <div class="crypto-dump">01011001 01010010 01001100 01000111</div>
                     <p><b>АНАЛИЗ БОРТОВОГО КОМПЬЮТЕРА:</b></p>
-                    <p style="color: #88ff88;">
+                    <p style="color: #88ff88; margin-top: 10px;">
                         Шаг 1: Переведите двоичный код (Binary) в текстовые символы ASCII.<br>
                         Шаг 2: Полученная строка зашифрована классическим сдвигом (Шифр Цезаря). <br>
                         Шаг 3: Величина сдвига равна количеству крыльев у Высших Серафимов в древних писаниях лора (сдвиг назад на 6 позиций в английском алфавите: A->U, B->V...).
@@ -255,9 +268,9 @@
                     <p>Фрагмент поврежденного QR-кода оставил глубокий след в системной шине. Файл обернут в двойной контейнер защиты.</p>
                     <div class="crypto-dump">TWpRdU1EWXVNalF3TmpJPQ==</div>
                     <p><b>АНАЛИЗ БОРТОВОГО КОМПЬЮТЕРА:</b></p>
-                    <p style="color: #88ff88;">
+                    <p style="color: #88ff88; margin-top: 10px;">
                         Контейнер использует стандартный сетевой алгоритм кодирования Base64. Попробуйте декодировать строку.<br>
-                        Полученный результат окажется Hex-строкой (Шестнадцатеричным кодом), хранящим системную дату судьбы сервера Legion-King в формате ДД.ММ.ГГГГ (через точки).
+                        Полученный результат окажется Hex-строкой (Шестнадцатеричным кодом), хранящим системную дату судьбы сервера в формате ДД.ММ.ГГГГ (через точки).
                     </p>
                 </div>
             </div>
@@ -267,7 +280,7 @@
     <div id="main-site-screen">
         <header>
             <div class="glitch-title">▼ END-SERAPHIM // CORE_OVERRIDE_RUNNING</div>
-            <p style="font-size: 12px; color: #7b2cbf; margin-top: 5px;">Обнаружено стороннее внедрение в структуры права ядра Spigot/Fabric.</p>
+            <p style="font-size: 12px; color: #7b2cbf; margin-top: 5px;">Обнаружено стороннее внедрение в структуры прав ядра Spigot/Fabric.</p>
         </header>
 
         <div class="main-content">
@@ -282,7 +295,7 @@
                     </div>
 
                     <div>
-                        <p style="font-size:12px; margin-bottom:5px; color:#dfc5ff;">Деструктивный прогресс брутфорса глобальной защиты:</p>
+                        <p style="font-size:12px; margin-bottom:5px; color:#dfc5ff; text-align: left;">Деструктивный прогресс брутфорса глобальной защиты:</p>
                         <div class="progress-bar-box">
                             <div class="progress-fill" id="p-fill"></div>
                             <div class="progress-text" id="p-text">Загрузка эксплойта: 0%</div>
@@ -290,7 +303,7 @@
                     </div>
 
                     <div>
-                        <p style="font-size:11px; margin-bottom:5px; color:#7b2cbf;">Генерация мастер-ключа обхода BungeeCord:</p>
+                        <p style="font-size:11px; margin-bottom:5px; color:#7b2cbf; text-align: left;">Генерация мастер-ключа обхода BungeeCord:</p>
                         <div class="matrix-brute-box" id="matrix-dump">Инициализация генератора шума...</div>
                     </div>
                 </div>
@@ -316,32 +329,40 @@
     </div>
 
     <script>
-        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-        function closeModal(id, event) { event.stopPropagation(); document.getElementById(id).style.display = 'none'; }
+        // Функции управления окнами подсказок (Пазлы)
+        function openModal(id) { 
+            document.getElementById(id).style.display = 'flex'; 
+        }
+        function closeModal(id, event) { 
+            if(event) event.stopPropagation();
+            document.getElementById(id).style.display = 'none'; 
+        }
 
-        // --- ОБЫЧНАЯ ТЕКСТОВАЯ ПРОВЕКА (БЕЗ SHA-256) ---
+        // --- ТЕКСТОВАЯ ПРОВЕРКА ОТВЕТОВ ---
         function verifyPuzzleAnswers() {
-            // Считываем значения, убирая случайные пробелы по краям
+            // Считываем значения полей ввода, очищая от лишних случайных пробелов
             const ans1 = document.getElementById('ans-p1').value.trim().toUpperCase();
             const ans2 = document.getElementById('ans-p2').value.trim();
 
-            // Простая прямая проверка ответов
+            // Точная текстовая сверка
             if (ans1 === 'VOID' && ans2 === '24.06.2026') {
+                // Скрываем ошибку и первый экран
                 document.getElementById('error-msg').style.display = 'none';
                 document.getElementById('puzzle-screen').style.display = 'none';
-                document.getElementById('main-site-screen').style.display = 'flex';
                 
-                document.body.style.backgroundColor = '#05020a';
-                document.styleSheets[0].addRule('body', 'color: #b57cff !important;');
-                document.styleSheets[0].addRule('body::before', 'background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06)) !important;');
+                // Переключаем фон и активируем главную фиолетовую страницу хакинга
+                document.body.classList.add('seraphim-theme');
+                document.getElementById('main-site-screen').style.display = 'flex';
 
+                // Запускаем сюжетную цепочку логирования
                 startBreachSequence();
             } else {
+                // Показываем сообщение о неудачной попытке
                 document.getElementById('error-msg').style.display = 'block';
             }
         }
 
-        // --- ЛОГИКА СЮЖЕТНОГО ХАКИНГА СЕРВЕРА ---
+        // --- ЛОГИКА СЮЖЕТНОГО ВЗЛОМА ---
         const consoleLog = document.getElementById('console');
         const termIn = document.getElementById('term-in');
         const pFill = document.getElementById('p-fill');
@@ -373,6 +394,7 @@
             executeNextPlotLog();
             breachInterval = setInterval(executeNextPlotLog, 4200);
 
+            // Бегущие символы брутфорса
             matrixInterval = setInterval(() => {
                 let chars = "01ABCDEFUXMVK_@#$§%&!?";
                 let str = "";
@@ -381,18 +403,4 @@
                 }
                 matrixDump.innerText = str;
             }, 100);
-        }
-
-        function executeNextPlotLog() {
-            if (plotIndex < plotLogs.length) {
-                const log = plotLogs[plotIndex];
-                const entry = document.createElement('div');
-                entry.classList.add('log-entry');
-                
-                let typeSpan = "";
-                if (log.type === "success") typeSpan = "<span class='log-success'>[SUCCESS]</span>";
-                else if (log.type === "crit") typeSpan = "<span class='log-crit'>[CRIT]</span>";
-                else if (log.type === "warn") typeSpan = "<span class='log-warn'>[SYSTEM]</span>";
-                else if (log.type === "seraphim") typeSpan = "<span class='log-seraphim'>[SERAPHIM]:</span>";
-
-                entry.innerHTML = `<span class='log-tim
+        
