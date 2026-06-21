@@ -33,7 +33,7 @@
             pointer-events: none;
         }
 
-        /* --- ЭКРАН 1: ТЕРМИНАЛ ДЕШИФРОВАНИЯ --- */
+        /* --- ЭКРАН 1: РЕТРО ПАЗЛ СИСТЕМА --- */
         #puzzle-screen {
             display: flex;
             flex-direction: column;
@@ -225,7 +225,7 @@
             </div>
 
             <button class="confirm-btn" onclick="verifyPuzzleAnswers()">ИСПОЛНИТЬ ЯДРО</button>
-            <p id="error-msg" style="color: #ff3333; font-size:12px; margin-top:15px; display:none; text-align:center; text-shadow:0 0 5px #ff0000;">[КРИТИЧЕСКАЯ ОШИБКА]: ХЭШ-КОДЫ НЕ ВАЛИДНЫ. ДОСТУП ПЕРЕХВАЧЕН СЕРАФИМОМ.</p>
+            <p id="error-msg" style="color: #ff3333; font-size:12px; margin-top:15px; display:none; text-align:center; text-shadow:0 0 5px #ff0000;">[КРИТИЧЕСКАЯ ОШИБКА]: КЛЮЧИ НЕ ВАЛИДНЫ. ДОСТУП ПЕРЕХВАЧЕН СЕРАФИМОМ.</p>
 
             <div class="puzzle-modal" id="modal-p1">
                 <div class="modal-header">
@@ -267,7 +267,7 @@
     <div id="main-site-screen">
         <header>
             <div class="glitch-title">▼ END-SERAPHIM // CORE_OVERRIDE_RUNNING</div>
-            <p style="font-size: 12px; color: #7b2cbf; margin-top: 5px;">Обнаружено стороннее внедрение в структуры прав ядра Spigot/Fabric.</p>
+            <p style="font-size: 12px; color: #7b2cbf; margin-top: 5px;">Обнаружено стороннее внедрение в структуры права ядра Spigot/Fabric.</p>
         </header>
 
         <div class="main-content">
@@ -319,30 +319,14 @@
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
         function closeModal(id, event) { event.stopPropagation(); document.getElementById(id).style.display = 'none'; }
 
-        // --- КРИПТОГРАФИЧЕСКИЙ ХЭШ SHA-256 ---
-        async function getSHA256Hash(text) {
-            const msgBuffer = new TextEncoder().encode(text);                    
-            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-        }
+        // --- ОБЫЧНАЯ ТЕКСТОВАЯ ПРОВЕКА (БЕЗ SHA-256) ---
+        function verifyPuzzleAnswers() {
+            // Считываем значения, убирая случайные пробелы по краям
+            const ans1 = document.getElementById('ans-p1').value.trim().toUpperCase();
+            const ans2 = document.getElementById('ans-p2').value.trim();
 
-        // --- ИСПРАВЛЕННАЯ ПРОВЕРКА ОТВЕТОВ ---
-        async function verifyPuzzleAnswers() {
-            // Считываем значения и жестко вырезаем абсолютно любые пробелы, табы и переносы строк (\s)
-            const ans1 = document.getElementById('ans-p1').value.replace(/\s+/g, '').toUpperCase();
-            const ans2 = document.getElementById('ans-p2').value.replace(/\s+/g, '');
-
-            // Вычисляем хэши от отфильтрованных строк
-            const hashedInput1 = await getSHA256Hash(ans1);
-            const hashedInput2 = await getSHA256Hash(ans2);
-
-            // Точные SHA-256 слепки ответов "VOID" и "24.06.2026"
-            const targetHash1 = '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08'; 
-            const targetHash2 = '8435d03370b4791ea70ff38fb817b1b36965fa2863768d71249b6b797f74fb9b'; 
-
-            // Сравнение
-            if (hashedInput1 === targetHash1 && hashedInput2 === targetHash2) {
+            // Простая прямая проверка ответов
+            if (ans1 === 'VOID' && ans2 === '24.06.2026') {
                 document.getElementById('error-msg').style.display = 'none';
                 document.getElementById('puzzle-screen').style.display = 'none';
                 document.getElementById('main-site-screen').style.display = 'flex';
@@ -357,7 +341,7 @@
             }
         }
 
-        // --- ЛОГИКА СЮЖЕТНОГО ХАКИНГА ---
+        // --- ЛОГИКА СЮЖЕТНОГО ХАКИНГА СЕРВЕРА ---
         const consoleLog = document.getElementById('console');
         const termIn = document.getElementById('term-in');
         const pFill = document.getElementById('p-fill');
@@ -393,4 +377,22 @@
                 let chars = "01ABCDEFUXMVK_@#$§%&!?";
                 let str = "";
                 for(let i=0; i<120; i++) {
-              
+                    str += chars[Math.floor(Math.random()*chars.length)];
+                }
+                matrixDump.innerText = str;
+            }, 100);
+        }
+
+        function executeNextPlotLog() {
+            if (plotIndex < plotLogs.length) {
+                const log = plotLogs[plotIndex];
+                const entry = document.createElement('div');
+                entry.classList.add('log-entry');
+                
+                let typeSpan = "";
+                if (log.type === "success") typeSpan = "<span class='log-success'>[SUCCESS]</span>";
+                else if (log.type === "crit") typeSpan = "<span class='log-crit'>[CRIT]</span>";
+                else if (log.type === "warn") typeSpan = "<span class='log-warn'>[SYSTEM]</span>";
+                else if (log.type === "seraphim") typeSpan = "<span class='log-seraphim'>[SERAPHIM]:</span>";
+
+                entry.innerHTML = `<span class='log-tim
