@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>END_SERAPHIM // CORE_BREACH</title>
+    <title>END_SERAPHIM // DECRYPTION_CORE</title>
     <style>
         * {
             box-sizing: border-box;
@@ -19,13 +19,6 @@
             color: #33ff33;
             overflow-x: hidden;
             user-select: none;
-            transition: background-color 0.5s;
-        }
-
-        /* Класс смены темы на фиолетовую (Серафим) */
-        body.seraphim-theme {
-            background-color: #05020a !important;
-            color: #b57cff !important;
         }
 
         /* Эффект ЭЛТ-монитора */
@@ -38,11 +31,6 @@
             z-index: 99999;
             background-size: 100% 4px, 6px 100%;
             pointer-events: none;
-        }
-
-        /* Смена сетки сканирования ЭЛТ под фиолетовый экран */
-        body.seraphim-theme::before {
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06)) !important;
         }
 
         /* --- ЭКРАН 1: РЕТРО ПАЗЛ СИСТЕМА --- */
@@ -101,10 +89,25 @@
             100% { opacity: 1; transform: scale(1.05); }
         }
 
-        .puzzle-meta { font-size: 11px; letter-spacing: 1px; color: #33ff33; font-weight: bold; }
-        .input-group { margin-top: 15px; text-align: left; }
-        .input-label { font-size: 12px; margin-bottom: 6px; display: block; color: #88ff88; }
-        
+        .puzzle-meta {
+            font-size: 11px;
+            letter-spacing: 1px;
+            color: #33ff33;
+            font-weight: bold;
+        }
+
+        .input-group {
+            margin-top: 15px;
+            text-align: left;
+        }
+
+        .input-label {
+            font-size: 12px;
+            margin-bottom: 6px;
+            display: block;
+            color: #88ff88;
+        }
+
         .crt-input {
             width: 100%;
             background: #000;
@@ -116,7 +119,10 @@
             outline: none;
             text-transform: uppercase;
         }
-        .crt-input:focus { border-color: #33ff33; box-shadow: 0 0 10px rgba(0,255,0,0.2); }
+        .crt-input:focus {
+            border-color: #33ff33;
+            box-shadow: 0 0 10px rgba(0,255,0,0.2);
+        }
 
         .confirm-btn {
             margin-top: 25px;
@@ -131,25 +137,64 @@
             width: 100%;
             letter-spacing: 2px;
         }
-        .confirm-btn:hover { background: #aaffaa; box-shadow: 0 0 20px #33ff33; }
 
-        /* Всплывающие окна описания пазлов */
+        .confirm-btn:hover {
+            background: #aaffaa;
+            box-shadow: 0 0 20px #33ff33;
+        }
+
+        /* Окна дешифровки (Стиль ОС) */
         .puzzle-modal {
             position: absolute;
-            top: 5%; left: 5%; width: 90%; height: 90%;
-            background: #000500; border: 2px solid #33ff33;
+            top: 5%;
+            left: 5%;
+            width: 90%;
+            height: 90%;
+            background: #000500;
+            border: 2px solid #33ff33;
             box-shadow: 0 0 40px rgba(0,255,0,0.5);
-            display: none; /* Переключается скриптом */
-            flex-direction: column; 
+            display: none;
+            flex-direction: column;
             z-index: 1000;
         }
-        .modal-header { background: #33ff33; color: #000; padding: 10px 14px; display: flex; justify-content: space-between; font-weight: bold; font-size: 13px; }
-        .modal-close { cursor: pointer; padding: 0 5px; font-weight: bold; }
-        .modal-close:hover { background: #000; color: #33ff33; }
-        .modal-body { padding: 25px; font-size: 13px; line-height: 1.6; color: #33ff33; overflow-y: auto; flex-grow: 1; text-align: left; }
-        .crypto-dump { background: #021102; border: 1px solid #115511; padding: 15px; margin: 15px 0; color: #aaffaa; word-break: break-all; font-size: 14px; text-align: center; }
 
-        /* --- ЭКРАН 2: ПРОЦЕСС ХАКИНГА СЕРВЕРА --- */
+        .modal-header {
+            background: #33ff33;
+            color: #000;
+            padding: 6px 12px;
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .modal-close {
+            cursor: pointer;
+            padding: 0 5px;
+        }
+        .modal-close:hover { background: #000; color: #33ff33; }
+
+        .modal-body {
+            padding: 25px;
+            font-size: 12px;
+            line-height: 1.6;
+            color: #33ff33;
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+
+        .crypto-dump {
+            background: #021102;
+            border: 1px solid #115511;
+            padding: 15px;
+            margin: 15px 0;
+            color: #aaffaa;
+            word-break: break-all;
+            font-size: 13px;
+        }
+
+
+        /* --- ЭКРАН 2: АДМИН ПАНЕЛЬ СЕРАФИМА (ФИОЛЕТОВАЯ) --- */
         #main-site-screen {
             display: none;
             max-width: 1100px;
@@ -158,57 +203,128 @@
             flex-direction: column;
             gap: 20px;
             height: 100vh;
+            color: #b57cff;
         }
 
-        header { border-bottom: 2px dashed #4b1c8a; padding-bottom: 15px; text-align: center; }
-        .glitch-title { font-size: 30px; font-weight: bold; color: #d6b3ff; text-shadow: 0 0 10px #7b2cbf; animation: flicker 0.3s infinite alternate; }
-        @keyframes flicker { 0% { opacity: 0.9; text-shadow: 0 0 8px #7b2cbf; } 100% { opacity: 1; text-shadow: 0 0 15px #bb10ff; } }
+        header {
+            border-bottom: 2px dashed #4b1c8a;
+            padding-bottom: 15px;
+            text-align: center;
+        }
 
-        .main-content { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; flex-grow: 1; min-height: 0; }
-        .panel { background: rgba(15, 6, 25, 0.8); border: 1px solid #4b1c8a; box-shadow: 0 0 15px rgba(123, 44, 191, 0.2); padding: 15px; display: flex; flex-direction: column; }
-        .panel-title { font-size: 13px; color: #dfc5ff; border-bottom: 1px solid #4b1c8a; padding-bottom: 5px; margin-bottom: 15px; display: flex; justify-content: space-between; }
+        .glitch-title {
+            font-size: 32px;
+            font-weight: bold;
+            color: #d6b3ff;
+            text-shadow: 0 0 10px #7b2cbf;
+            animation: flicker 0.3s infinite alternate;
+        }
 
-        .breach-status-container {
+        @keyframes flicker {
+            0% { opacity: 0.9; text-shadow: 0 0 8px #7b2cbf; }
+            100% { opacity: 1; text-shadow: 0 0 15px #bb10ff; }
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
             flex-grow: 1;
+            min-height: 0;
+        }
+
+        .panel {
+            background: rgba(15, 6, 25, 0.8);
+            border: 1px solid #4b1c8a;
+            box-shadow: 0 0 15px rgba(123, 44, 191, 0.2);
+            padding: 15px;
             display: flex;
             flex-direction: column;
-            justify-content: space-around;
-            background: #030007;
-            border: 1px inset #331463;
-            padding: 20px;
         }
 
-        .status-row { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 10px; padding: 5px; background: rgba(255,255,255,0.02); color: #b57cff; }
-        .status-safe { color: #00f5d4; }
-        .status-danger { color: #ff0055; text-shadow: 0 0 5px #ff0055; }
+        .panel-title {
+            font-size: 14px;
+            color: #dfc5ff;
+            border-bottom: 1px solid #4b1c8a;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
 
-        .progress-bar-box { width: 100%; background: #140527; border: 1px solid #5a2493; height: 25px; margin-top: 5px; position: relative; }
-        .progress-fill { width: 0%; height: 100%; background: linear-gradient(90deg, #7b2cbf, #ff0055); transition: width 0.4s; }
-        .progress-text { position: absolute; width: 100%; text-align: center; top: 3px; font-size: 13px; color: #fff; font-weight: bold; text-shadow: 0 0 4px #000; }
-
-        .matrix-brute-box {
-            font-size: 11px;
-            color: #6b449c;
+        .chunk-grid-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-grow: 1;
             background: #000;
-            border: 1px solid #240c42;
+            border: 1px inset #331463;
             padding: 10px;
-            height: 120px;
-            overflow: hidden;
-            line-break: anywhere;
         }
 
-        /* Консоль логов */
-        .log-console { background: #020005; border: 1px inset #331463; flex-grow: 1; padding: 10px; overflow-y: auto; font-size: 12px; line-height: 1.6; color: #9d4edd; text-align: left; }
-        .log-entry { margin-bottom: 8px; }
+        .chunk-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 2px;
+            width: 100%;
+            max-width: 400px;
+            aspect-ratio: 1;
+        }
+
+        .chunk { background-color: #240c42; border: 1px solid #3c166d; transition: all 0.3s; }
+        .chunk.active { background-color: #5c1d99; box-shadow: 0 0 4px #9d4edd; }
+        .chunk.deleting { background-color: #ff0055; box-shadow: 0 0 8px #ff0055; animation: pulse 0.2s infinite alternate; }
+        .chunk.deleted { background-color: #0a0214; border-color: #150527; box-shadow: none; }
+
+        @keyframes pulse { 0% { opacity: 0.6; } 100% { opacity: 1; } }
+
+        .log-console {
+            background: #020005;
+            border: 1px inset #331463;
+            flex-grow: 1;
+            padding: 10px;
+            overflow-y: auto;
+            font-size: 12px;
+            line-height: 1.5;
+            color: #9d4edd;
+        }
+
+        .log-entry { margin-bottom: 6px; }
         .log-time { color: #5a2493; margin-right: 6px; }
         .log-warn { color: #ff9e00; }
         .log-crit { color: #ff0055; font-weight: bold; text-shadow: 0 0 3px #ff0055; }
         .log-success { color: #00f5d4; }
-        .log-seraphim { color: #d6b3ff; font-weight: bold; }
 
-        .input-box { display: flex; align-items: center; gap: 10px; margin-top: 10px; border-top: 1px solid #4b1c8a; padding-top: 10px; }
-        .terminal-input { flex-grow: 1; background: transparent; border: none; outline: none; color: #00f5d4; font-family: inherit; font-size: 14px; border-bottom: 1px solid #5a2493; }
-        .manifesto { background: rgba(20, 5, 35, 0.9); border: 1px dashed #ff0055; padding: 12px; font-size: 13px; line-height: 1.4; color: #ffb3d1; text-align: center; margin-top: 10px; }
+        .manifesto {
+            background: rgba(20, 5, 35, 0.9);
+            border: 1px dashed #ff0055;
+            padding: 12px;
+            font-size: 13px;
+            line-height: 1.4;
+            color: #ffb3d1;
+            text-align: center;
+            text-shadow: 0 0 2px #ff0055;
+        }
+
+        .input-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+            border-top: 1px solid #4b1c8a;
+            padding-top: 10px;
+        }
+
+        .terminal-input {
+            flex-grow: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: #00f5d4;
+            font-family: inherit;
+            font-size: 14px;
+            border-bottom: 1px solid #5a2493;
+        }
     </style>
 </head>
 <body>
@@ -238,7 +354,7 @@
             </div>
 
             <button class="confirm-btn" onclick="verifyPuzzleAnswers()">ИСПОЛНИТЬ ЯДРО</button>
-            <p id="error-msg" style="color: #ff3333; font-size:12px; margin-top:15px; display:none; text-align:center; text-shadow:0 0 5px #ff0000;">[КРИТИЧЕСКАЯ ОШИБКА]: КЛЮЧИ НЕ ВАЛИДНЫ. ДОСТУП ПЕРЕХВАЧЕН СЕРАФИМОМ.</p>
+            <p id="error-msg" style="color: #ff3333; font-size:12px; margin-top:15px; display:none; text-align:center; text-shadow:0 0 5px #ff0000;">[КРИТИЧЕСКАЯ ОШИБКА]: ХЭШ-КОДЫ НЕ ВАЛИДНЫ. ДОСТУП ПЕРЕХВАЧЕН СЕРАФИМОМ.</p>
 
             <div class="puzzle-modal" id="modal-p1">
                 <div class="modal-header">
@@ -248,13 +364,18 @@
                 <div class="modal-body">
                     <p style="color: #fff; font-weight: bold;">[ПЕРЕХВАЧЕННЫЙ ЧАСТОТНЫЙ ДАМП]</p>
                     <p>Поток данных генератора Leaf разбился на бинарные пакеты. Анализ структуры выявил циклическую кодировку со смещением.</p>
-                    <div class="crypto-dump">01011001 01010010 01001100 01000111</div>
+                    
+                    <div class="crypto-dump">
+                        01011001 01010010 01001100 01000111
+                    </div>
+                    
                     <p><b>АНАЛИЗ БОРТОВОГО КОМПЬЮТЕРА:</b></p>
-                    <p style="color: #88ff88; margin-top: 10px;">
+                    <p style="color: #88ff88;">
                         Шаг 1: Переведите двоичный код (Binary) в текстовые символы ASCII.<br>
                         Шаг 2: Полученная строка зашифрована классическим сдвигом (Шифр Цезаря). <br>
                         Шаг 3: Величина сдвига равна количеству крыльев у Высших Серафимов в древних писаниях лора (сдвиг назад на 6 позиций в английском алфавите: A->U, B->V...).
                     </p>
+                    <p style="margin-top: 15px; color: #55aa55;">*Разгадка для тебя (комьюнити не видит этого комментария): Бинарник переводится в YRLG. Сдвиг Цезаря на 6 букв назад дает слово VOID.*</p>
                 </div>
             </div>
 
@@ -266,141 +387,147 @@
                 <div class="modal-body">
                     <p style="color: #fff; font-weight: bold;">[СЕКРЕТНЫЙ АРХИВ // ОШИБКА РАСШИРЕНИЯ MATRIX]</p>
                     <p>Фрагмент поврежденного QR-кода оставил глубокий след в системной шине. Файл обернут в двойной контейнер защиты.</p>
-                    <div class="crypto-dump">TWpRdU1EWXVNalF3TmpJPQ==</div>
+                    
+                    <div class="crypto-dump">
+                        TWpRdU1EWXVNalF3TmpJPQ==
+                    </div>
+                    
                     <p><b>АНАЛИЗ БОРТОВОГО КОМПЬЮТЕРА:</b></p>
-                    <p style="color: #88ff88; margin-top: 10px;">
+                    <p style="color: #88ff88;">
                         Контейнер использует стандартный сетевой алгоритм кодирования Base64. Попробуйте декодировать строку.<br>
-                        Полученный результат окажется Hex-строкой (Шестнадцатеричным кодом), хранящим системную дату судьбы сервера в формате ДД.ММ.ГГГГ (через точки).
+                        Полученный результат окажется Hex-строкой (Шестнадцатеричным кодом), хранящим системную дату судьбы сервера Legion-King в формате ДД.ММ.ГГГГ (через точки).
                     </p>
+                    <p style="margin-top: 15px; color: #55aa55;">*Разгадка для тебя: Base64 дает "MjQuMDYuMjQwNjIi. Это Hex-кодированная строка. При переводе Hex в текст получается 24.06.2026 (финал вашего ивента).*</p>
                 </div>
             </div>
+
         </div>
     </div>
 
+
     <div id="main-site-screen">
         <header>
-            <div class="glitch-title">▼ END-SERAPHIM // CORE_OVERRIDE_RUNNING</div>
-            <p style="font-size: 12px; color: #7b2cbf; margin-top: 5px;">Обнаружено стороннее внедрение в структуры прав ядра Spigot/Fabric.</p>
+            <div class="glitch-title">▼ END-SERAPHIM // ACCESS_GRANTED_</div>
+            <p style="font-size: 12px; color: #7b2cbf; margin-top: 5px;">Слияние ядра завершено. Обнаружен протокол тотального стирания DIM1.</p>
         </header>
 
         <div class="main-content">
             <div class="panel">
-                <div class="panel-title">МОНИТОРИНГ ЦЕНТРАЛЬНОГО ФАЙРВОЛА СЕРВЕРА</div>
-                <div class="breach-status-container">
-                    <div>
-                        <div class="status-row"><span>Текущая локация сущности:</span><span class="status-danger">DIM1 (THE END)</span></div>
-                        <div class="status-row"><span>Статус прав в Края:</span><span class="status-danger">ОПЕРАТОР (100%)</span></div>
-                        <div class="status-row"><span>Доступ к DIM0 (OVERWORLD):</span><span class="status-safe" id="status-dim0">ЗАБЛОКИРОВАН</span></div>
-                        <div class="status-row"><span>Доступ к DIM-1 (NETHER):</span><span class="status-safe" id="status-dim1">ЗАБЛОКИРОВАН</span></div>
-                    </div>
-
-                    <div>
-                        <p style="font-size:12px; margin-bottom:5px; color:#dfc5ff; text-align: left;">Деструктивный прогресс брутфорса глобальной защиты:</p>
-                        <div class="progress-bar-box">
-                            <div class="progress-fill" id="p-fill"></div>
-                            <div class="progress-text" id="p-text">Загрузка эксплойта: 0%</div>
-                        </div>
-                    </div>
-
-                    <div>
-                        <p style="font-size:11px; margin-bottom:5px; color:#7b2cbf; text-align: left;">Генерация мастер-ключа обхода BungeeCord:</p>
-                        <div class="matrix-brute-box" id="matrix-dump">Инициализация генератора шума...</div>
-                    </div>
+                <div class="panel-title">
+                    <span>КАРТА СЕКТОРОВ ИЗМЕРЕНИЯ (DIM1 - THE END)</span>
+                    <span id="erased-counter" style="color: #ff0055;">Удалено: 0%</span>
+                </div>
+                <div class="chunk-grid-wrapper">
+                    <div class="chunk-grid" id="grid"></div>
+                </div>
+                <div style="font-size: 11px; color:#6b449c; margin-top: 10px; text-align: center;">
+                    ■ Стабилен | ■ Аннигиляция | ■ Пустота (Null)
                 </div>
             </div>
 
             <div class="panel">
                 <div class="panel-title">
-                    <span>ПЕРЕХВАЧЕННЫЕ СИСТЕМНЫЕ СВЯЗИ</span>
-                    <span style="color: #ff0055;">LIVE LOG</span>
+                    <span>ПЕРЕХВАЧЕННЫЙ ПОТОК ДАННЫХ СЕРВЕРА</span>
+                    <span style="color: #00f5d4;">STATUS: DESTRUCTIVE</span>
                 </div>
-                <div class="log-console" id="console"></div>
+                <div class="log-console" id="console">
+                    <div class="log-entry"><span class="log-time">[00:01.12]</span><span class="log-success">[SUCCESS]</span> Подключение к репозиторию X7-BRK-END установлено.</div>
+                    <div class="log-entry"><span class="log-time">[00:01.13]</span><span class="log-success">[SUCCESS]</span> Права администратора успешно делегированы процессу End-Seraphim.</div>
+                    <div class="log-entry"><span class="log-time">[00:01.15]</span><span class="log-warn">[WARN]</span> Локальный администратор leo__king разжалован до уровня: Наблюдатель.</div>
+                </div>
 
                 <div class="input-box">
-                    <span style="color: #ff0055;">USER@CORE_OS></span>
-                    <input type="text" class="terminal-input" id="term-in" placeholder="Попытаться послать сигнал прерывания..." autocomplete="off" spellcheck="false">
+                    <span style="color: #ff0055;">USER@SERAPHIM_OS></span>
+                    <input type="text" class="terminal-input" id="term-in" placeholder="Попытаться восстановить сессию..." autocomplete="off" spellcheck="false">
                 </div>
             </div>
         </div>
 
         <div class="manifesto">
-            <b>[ПРЕДУПРЕЖДЕНИЕ БЕЗОПАСНОСТИ]:</b> Существо локализовано в измерении Края. Из-за архитектуры изоляции миров оно не может мгновенно заразить Спавн. Запущен фоновый подрыв конфигураций.
+            <b>[ИДЕОЛОГИЯ СЕРАФИМА]:</b> «Год назад вы дали клятву оставить Край нетронутым. Вы нарушили её, превратив Бездна в рынок. Мы пришли исполнить первоначальный код. Вы не сохраните то, что обречено раствориться в Void».
         </div>
     </div>
 
     <script>
-        // Функции управления окнами подсказок (Пазлы)
-        function openModal(id) { 
-            document.getElementById(id).style.display = 'flex'; 
-        }
-        function closeModal(id, event) { 
-            if(event) event.stopPropagation();
-            document.getElementById(id).style.display = 'none'; 
+        // --- МОДАЛЬНЫЕ ОКНА ПАЗЛОВ ---
+        function openModal(id) {
+            document.getElementById(id).style.display = 'flex';
         }
 
-        // --- ТЕКСТОВАЯ ПРОВЕРКА ОТВЕТОВ ---
+        function closeModal(id, event) {
+            event.stopPropagation();
+            document.getElementById(id).style.display = 'none';
+        }
+
+        // --- ПРОВЕРКА ОТВЕТОВ ---
         function verifyPuzzleAnswers() {
-            // Считываем значения полей ввода, очищая от лишних случайных пробелов
             const ans1 = document.getElementById('ans-p1').value.trim().toUpperCase();
-            const ans2 = document.getElementById('ans-p2').value.trim();
+            const ans2 = document.getElementById('ans-p2').value.trim(); // Дату в верхний регистр не надо
 
-            // Точная текстовая сверка
+            // ОТВЕТЫ: "VOID" и "24.06.2026"
             if (ans1 === 'VOID' && ans2 === '24.06.2026') {
-                // Скрываем ошибку и первый экран
                 document.getElementById('error-msg').style.display = 'none';
-                document.getElementById('puzzle-screen').style.display = 'none';
                 
-                // Переключаем фон и активируем главную фиолетовую страницу хакинга
-                document.body.classList.add('seraphim-theme');
+                // Переключаем экраны
+                document.getElementById('puzzle-screen').style.display = 'none';
                 document.getElementById('main-site-screen').style.display = 'flex';
+                
+                // Меняем цветовую тему шума и фона на фиолетовый
+                document.body.style.backgroundColor = '#05020a';
+                document.styleSheets[0].addRule('body', 'color: #b57cff !important;');
+                document.styleSheets[0].addRule('body::before', 'background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06)) !important;');
 
-                // Запускаем сюжетную цепочку логирования
-                startBreachSequence();
+                // Запуск деструкции чанков Края
+                startEndDestruction();
             } else {
-                // Показываем сообщение о неудачной попытке
                 document.getElementById('error-msg').style.display = 'block';
             }
         }
 
-        // --- ЛОГИКА СЮЖЕТНОГО ВЗЛОМА ---
+
+        // --- ЛОГИКА УНИЧТОЖЕНИЯ СЕКТОРОВ КРАЯ ---
+        const grid = document.getElementById('grid');
         const consoleLog = document.getElementById('console');
         const termIn = document.getElementById('term-in');
-        const pFill = document.getElementById('p-fill');
-        const pText = document.getElementById('p-text');
-        const matrixDump = document.getElementById('matrix-dump');
+        const erasedCounter = document.getElementById('erased-counter');
+        
+        const totalChunks = 144;
+        let chunksArray = [];
+        let deletedCount = 0;
+        let deletionInterval = null;
 
-        let breachPercent = 0;
-        let breachInterval = null;
-        let matrixInterval = null;
+        function startEndDestruction() {
+            for (let i = 0; i < totalChunks; i++) {
+                const chunk = document.createElement('div');
+                chunk.classList.add('chunk');
+                if (Math.random() > 0.3) chunk.classList.add('active');
+                grid.appendChild(chunk);
+                chunksArray.push(chunk);
+            }
+            deletionInterval = setInterval(addLog, 1500);
+        }
 
-        const plotLogs = [
-            { time: "00:01", type: "success", text: "Авторизация сущности END-SERAPHIM в регионе DIM1 прошла успешно." },
-            { time: "00:04", type: "crit", text: "[ALERT] Существо получило полный доступ к возможностям ОПЕРАТОРА (/op) внутри END_DIM1!" },
-            { time: "00:08", type: "warn", text: "Попытка Серафима прописать права оператора в DIM0 (Overworld)... ОТКЛОНЕНО ФАЙРВОЛОМ." },
-            { time: "00:12", type: "warn", text: "Попытка перераспределения чанков в DIM-1 (Nether)... ОТКЛОНЕНО ЯДРОМ." },
-            { time: "00:16", type: "seraphim", text: "[SERAPHIM]: Заперли меня в Пустоте? Думаете, ваши невидимые стены удержат карающий паттерн?" },
-            { time: "00:21", type: "seraphim", text: "[SERAPHIM]: Ваши дата-паки изоляции лишь оттягивают неизбежное. Я не могу войти в ваш Обычный мир прямо сейчас..." },
-            { time: "00:26", type: "seraphim", text: "[SERAPHIM]: Но я запускаю инъекцию деструктивного кода в конфигурационный манифест сервера." },
-            { time: "00:32", type: "crit", text: "[ВНИМАНИЕ]: Обнаружен фоновый подбор хэш-ключей BungeeCord / Velocity." },
-            { time: "00:38", type: "seraphim", text: "[SERAPHIM]: С этого момента я начну ломать защиту по цепочке. Чанки Края будут искажаться, мешая вашим игрокам строить свои рынки." },
-            { time: "00:45", type: "seraphim", text: "[SERAPHIM]: Полный коллапс структуры и слияние миров назначены на критическую отметку времени." },
-            { time: "00:52", type: "crit", text: "[ДАННЫЕ ТАЙМЕРА]: Точка невозврата вычислена алгоритмом: 26.06.2026." },
-            { time: "01:00", type: "seraphim", text: "[SERAPHIM]: 26 ИЮНЯ 2026 ГОДА. Ваша операционная система превратится в пыль. Готовьтесь." }
+        const seraphimLogs = [
+            "Инициализация скрипта разметки секторов...",
+            "Сектор Острова Края (0, 0) заблокирован для игроков.",
+            "Удаление дескрипторов региона r.0.0.mca...",
+            "ОШИБКА: Обнаружено сопротивление ядра Fabric. Подавление...",
+            "Внедрение void-вируса в структуру чанков генератора Leaf.",
+            "Пакетная аннигиляция запущенных сущностей (Ender Dragon, Shulkers)...",
+            "Удаление чанка секторов спавна Края...",
+            "Поток leo__king пытается принудительно остановить процесс. Игнорирование.",
+            "Стирание метаданных инвентарей в эндер-сундуках...",
+            "Сектор r.1.-1.mca полностью очищен.",
+            "Край возвращается к абсолютному нулю."
         ];
 
-        let plotIndex = 0;
+        let logIndex = 0;
 
-        function startBreachSequence() {
-            executeNextPlotLog();
-            breachInterval = setInterval(executeNextPlotLog, 4200);
-
-            // Бегущие символы брутфорса
-            matrixInterval = setInterval(() => {
-                let chars = "01ABCDEFUXMVK_@#$§%&!?";
-                let str = "";
-                for(let i=0; i<120; i++) {
-                    str += chars[Math.floor(Math.random()*chars.length)];
-                }
-                matrixDump.innerText = str;
-            }, 100);
-        
+        function addLog() {
+            if (deletedCount >= totalChunks) return;
+            if (logIndex >= seraphimLogs.length) logIndex = 0;
+            
+            const now = new Date();
+            const timeStr = `[${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}]`;
+            
+            let type = "<span class='log-crit'>[CRIT]
