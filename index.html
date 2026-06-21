@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>END_SERAPHIM // OVERRIDE</title>
+    <title>END_SERAPHIM // TERMINAL</title>
     <style>
         * {
             box-sizing: border-box;
@@ -16,31 +16,177 @@
             width: 100%;
             height: 100%;
             background-color: #05020a;
-            color: #b57cff;
+            color: #33ff33; /* Зеленый ретро цвет в начале */
             overflow-x: hidden;
             user-select: none;
         }
 
-        /* Эффект шума на фоне */
+        /* Эффект ЭЛТ-монитора и шума */
         body::before {
             content: " ";
             display: block;
             position: fixed;
             top: 0; left: 0; bottom: 0; right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.3) 50%), linear-gradient(90deg, rgba(0, 255, 0, 0.05), rgba(0, 255, 0, 0.02), rgba(0, 255, 0, 0.05));
             z-index: 99999;
             background-size: 100% 4px, 6px 100%;
             pointer-events: none;
         }
 
-        .container {
+        /* --- ЭКРАН 1: РЕТРО ПАЗЛ СИСТЕМА --- */
+        #puzzle-screen {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100vh;
+            background-color: #030a03;
+            padding: 20px;
+            box-shadow: inset 0 0 100px rgba(0,255,0,0.3);
+        }
+
+        .crt-frame {
+            width: 100%;
+            max-width: 900px;
+            border: 4px solid #113311;
+            background: #001100;
+            padding: 30px;
+            box-shadow: 0 0 30px rgba(0,255,0,0.1);
+            position: relative;
+        }
+
+        .puzzle-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .puzzle-box {
+            border: 2px solid #33ff33;
+            padding: 15px;
+            text-align: center;
+            background: rgba(0,20,0,0.5);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .puzzle-box:hover {
+            background: rgba(0,255,0,0.1);
+            box-shadow: 0 0 15px rgba(0,255,0,0.2);
+            transform: scale(1.02);
+        }
+
+        .puzzle-img-placeholder {
+            width: 100%;
+            height: 180px;
+            border: 1px dashed #33ff33;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 40px;
+        }
+
+        .puzzle-meta {
+            font-size: 12px;
+            letter-spacing: 1px;
+            color: #88ff88;
+        }
+
+        .input-group {
+            margin-top: 15px;
+            text-align: left;
+        }
+
+        .input-label {
+            font-size: 13px;
+            margin-bottom: 5px;
+            display: block;
+            color: #33ff33;
+        }
+
+        .crt-input {
+            width: 100%;
+            background: #000;
+            border: 1px solid #33ff33;
+            padding: 8px 12px;
+            color: #33ff33;
+            font-family: inherit;
+            font-size: 16px;
+            outline: none;
+            text-transform: uppercase; /* Авто-капс для удобства */
+        }
+
+        .confirm-btn {
+            margin-top: 20px;
+            background: #33ff33;
+            color: #000;
+            border: none;
+            padding: 10px 25px;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .confirm-btn:hover {
+            background: #aaffaa;
+            box-shadow: 0 0 15px #33ff33;
+        }
+
+        /* Модальные окна для Пазлов (Вкладки как на ПК) */
+        .puzzle-modal {
+            position: absolute;
+            top: 10%;
+            left: 15%;
+            width: 70%;
+            background: #001a00;
+            border: 2px solid #33ff33;
+            box-shadow: 0 0 35px rgba(0,255,0,0.4);
+            display: none;
+            flex-direction: column;
+            z-index: 1000;
+        }
+
+        .modal-header {
+            background: #33ff33;
+            color: #000;
+            padding: 5px 10px;
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .modal-close {
+            cursor: pointer;
+            padding: 0 5px;
+        }
+        .modal-close:hover { background: #000; color: #33ff33; }
+
+        .modal-body {
+            padding: 20px;
+            font-size: 13px;
+            line-height: 1.5;
+            color: #aaffaa;
+            max-height: 350px;
+            overflow-y: auto;
+        }
+
+
+        /* --- ЭКРАН 2: АДМИН ПАНЕЛЬ СЕРАФИМА (ФИОЛЕТОВАЯ) --- */
+        #main-site-screen {
+            display: none;
             max-width: 1100px;
             margin: 0 auto;
             padding: 20px;
-            display: flex;
             flex-direction: column;
             gap: 20px;
             height: 100vh;
+            color: #b57cff; /* Переключаемся на фиолетовый */
         }
 
         header {
@@ -67,7 +213,7 @@
             grid-template-columns: 1fr 1fr;
             gap: 20px;
             flex-grow: 1;
-            min-height: 0; /* Важно для overflow во внутренних блоках */
+            min-height: 0;
         }
 
         .panel {
@@ -89,7 +235,6 @@
             justify-content: space-between;
         }
 
-        /* Сетка чанков */
         .chunk-grid-wrapper {
             display: flex;
             justify-content: center;
@@ -115,29 +260,12 @@
             transition: all 0.3s;
         }
 
-        .chunk.active {
-            background-color: #5c1d99;
-            box-shadow: 0 0 4px #9d4edd;
-        }
+        .chunk.active { background-color: #5c1d99; box-shadow: 0 0 4px #9d4edd; }
+        .chunk.deleting { background-color: #ff0055; box-shadow: 0 0 8px #ff0055; animation: pulse 0.2s infinite alternate; }
+        .chunk.deleted { background-color: #0a0214; border-color: #150527; box-shadow: none; }
 
-        .chunk.deleting {
-            background-color: #ff0055;
-            box-shadow: 0 0 8px #ff0055;
-            animation: pulse 0.2s infinite alternate;
-        }
+        @keyframes pulse { 0% { opacity: 0.6; } 100% { opacity: 1; } }
 
-        .chunk.deleted {
-            background-color: #0a0214;
-            border-color: #150527;
-            box-shadow: none;
-        }
-
-        @keyframes pulse {
-            0% { opacity: 0.6; }
-            100% { opacity: 1; }
-        }
-
-        /* Консоль логов */
         .log-console {
             background: #020005;
             border: 1px inset #331463;
@@ -155,7 +283,6 @@
         .log-crit { color: #ff0055; font-weight: bold; text-shadow: 0 0 3px #ff0055; }
         .log-success { color: #00f5d4; }
 
-        /* Идеологический манифест подвала */
         .manifesto {
             background: rgba(20, 5, 35, 0.9);
             border: 1px dashed #ff0055;
@@ -167,7 +294,6 @@
             text-shadow: 0 0 2px #ff0055;
         }
 
-        /* Инпут блокировки */
         .input-box {
             display: flex;
             align-items: center;
@@ -191,7 +317,69 @@
 </head>
 <body>
 
-    <div class="container">
+    <div id="puzzle-screen">
+        <div class="crt-frame">
+            <p style="font-size: 11px; color:#55aa55; margin-bottom: 15px;">SECURE CORE DECRYPTION SYSTEM // VER 0.82</p>
+            
+            <div class="puzzle-container">
+                <div class="puzzle-box" onclick="openModal('modal-p1')">
+                    <div class="puzzle-img-placeholder">🕸️</div>
+                    <div class="puzzle-meta">PUZZLE 01 - UNSTABLE FREQUENCY</div>
+                </div>
+                <div class="puzzle-box" onclick="openModal('modal-p2')">
+                    <div class="puzzle-img-placeholder">🏁</div>
+                    <div class="puzzle-meta">PUZZLE 02 - MEMORY FRAGMENT</div>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label class="input-label">PUZZLE 01 ANSWER (PATTERN KEY):</label>
+                <input type="text" class="crt-input" id="ans-p1" autocomplete="off" spellcheck="false" placeholder="...">
+            </div>
+            <div class="input-group">
+                <label class="input-label">PUZZLE 02 ANSWER (MATRIX CODE):</label>
+                <input type="text" class="crt-input" id="ans-p2" autocomplete="off" spellcheck="false" placeholder="...">
+            </div>
+
+            <button class="confirm-btn" onclick="verifyPuzzleAnswers()">CONFIRM</button>
+            <p id="error-msg" style="color: #ff3333; font-size:12px; margin-top:15px; display:none;">[ERROR]: Идентификационные хэши не совпадают. Доступ отклонен.</p>
+
+            <div class="puzzle-modal" id="modal-p1">
+                <div class="modal-header">
+                    <span>DECRYPTION WINDOW // PUZZLE_01.EXE</span>
+                    <span class="modal-close" onclick="closeModal('modal-p1', event)">X</span>
+                </div>
+                <div class="modal-body">
+                    <p style="color: #33ff33; margin-bottom: 10px;">[АНАЛИЗ СЕТИ ЧАСТОТЫ КРАЯ]</p>
+                    <p>Частотная сетка ядра Leaf искажена. Геометрия секторов Края завязана на фиксированной матрице деструкции.</p><br>
+                    <p style="background: rgba(0,255,0,0.1); padding: 8px; border-left: 2px solid #33ff33;">
+                        <b>Подсказка Архивариуса:</b> Вспомни общее количество секторов (чанков), которые разворачивает генератор Серафима в своей матрице 12x12 клеток.<br>
+                        Вычисли общую площадь поражения (12 умножить на 12).
+                    </p><br>
+                    <p style="font-size: 11px; color:#66aa66;">* Введите полученное числовое значение в поле ответа Pattern Key.</p>
+                </div>
+            </div>
+
+            <div class="puzzle-modal" id="modal-p2">
+                <div class="modal-header">
+                    <span>DECRYPTION WINDOW // PUZZLE_02.EXE</span>
+                    <span class="modal-close" onclick="closeModal('modal-p2', event)">X</span>
+                </div>
+                <div class="modal-body">
+                    <p style="color: #33ff33; margin-bottom: 10px;">[ФРАГМЕНТ ПАМЯТИ: КРИТИЧЕСКАЯ ДАТА]</p>
+                    <p>Матричный код содержит зашифрованную временную метку. Это точка невозврата всей операционной системы Legion-King's OS.</p><br>
+                    <p style="background: rgba(0,255,0,0.1); padding: 8px; border-left: 2px solid #33ff33;">
+                        <b>Подсказка лора:</b> Вспомни дату, указанную на таймере панели задач и в заметках блокнота. Это день, когда будет запущен критический сценарий LK VIII. Формат ввода: ДД.ММ.ГГГГ
+                    </p><br>
+                    <p style="font-size: 11px; color:#66aa66;">* Ответ: 24.06.2026</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <div id="main-site-screen">
         <header>
             <div class="glitch-title">▼ END-SERAPHIM // ACCESS_GRANTED_</div>
             <p style="font-size: 12px; color: #7b2cbf; margin-top: 5px;">Слияние ядра завершено. Обнаружен протокол тотального стирания DIM1.</p>
@@ -235,6 +423,40 @@
     </div>
 
     <script>
+        // --- ПАЗЛ-ИНТЕРАКТИВ ФУНКЦИИ ---
+        function openModal(id) {
+            document.getElementById(id).style.display = 'flex';
+        }
+
+        function closeModal(id, event) {
+            event.stopPropagation(); // Чтобы не срабатывал клик по самому боксу
+            document.getElementById(id).style.display = 'none';
+        }
+
+        function verifyPuzzleAnswers() {
+            const ans1 = document.getElementById('ans-p1').value.trim();
+            const ans2 = document.getElementById('ans-p2').value.trim();
+
+            // ПРАВИЛЬНЫЕ ОТВЕТЫ: 144 и 24.06.2026
+            if (ans1 === '144' && ans2 === '24.06.2026') {
+                document.getElementById('error-msg').style.display = 'none';
+                
+                // Переключаем экраны и тему
+                document.getElementById('puzzle-screen').style.display = 'none';
+                document.getElementById('main-site-screen').style.display = 'flex';
+                
+                // Меняем цвет шума ЭЛТ на фиолетовый
+                document.styleSheets[0].addRule('body', 'color: #b57cff !important;');
+                
+                // Запускаем уничтожение Края
+                startEndDestruction();
+            } else {
+                document.getElementById('error-msg').style.display = 'block';
+            }
+        }
+
+
+        // --- ЛОГИКА СТИРАНИЯ КРАЯ (ИЗ ПРОШЛОГО ШАГА) ---
         const grid = document.getElementById('grid');
         const consoleLog = document.getElementById('console');
         const termIn = document.getElementById('term-in');
@@ -243,20 +465,22 @@
         const totalChunks = 144; // 12x12
         let chunksArray = [];
         let deletedCount = 0;
+        let deletionInterval = null;
 
-        // Генерация сетки чанков
-        for (let i = 0; i < totalChunks; i++) {
-            const chunk = document.createElement('div');
-            chunk.classList.add('chunk');
-            // Делаем часть чанков изначально активными (загруженными)
-            if (Math.random() > 0.3) {
-                chunk.classList.add('active');
+        function startEndDestruction() {
+            // Генерируем сетку
+            for (let i = 0; i < totalChunks; i++) {
+                const chunk = document.createElement('div');
+                chunk.classList.add('chunk');
+                if (Math.random() > 0.3) {
+                    chunk.classList.add('active');
+                }
+                grid.appendChild(chunk);
+                chunksArray.push(chunk);
             }
-            grid.appendChild(chunk);
-            chunksArray.push(chunk);
+            deletionInterval = setInterval(addLog, 1500);
         }
 
-        // Логи, которые будут постепенно появляться
         const seraphimLogs = [
             "Инициализация скрипта разметки секторов...",
             "Сектор Острова Края (0, 0) заблокирован для игроков.",
@@ -268,15 +492,14 @@
             "Поток leo__king пытается принудительно остановить процесс. Игнорирование.",
             "Стирание метаданных инвентарей в эндер-сундуках...",
             "Сектор r.1.-1.mca полностью очищен.",
-            "Край возвращается к абсолютному нулю.",
-            "Синхронизация бэкдора завершена. Команда download_broken_end отключена со стороны сервера.",
-            "Вы не сможете спасти Legion-King. Процесс необратим."
+            "Край возвращается к абсолютному нулю."
         ];
 
         let logIndex = 0;
 
         function addLog() {
-            if (logIndex >= seraphimLogs.length) logIndex = 0; // Цикличность для бесконечного эффекта
+            if (deletedCount >= totalChunks) return;
+            if (logIndex >= seraphimLogs.length) logIndex = 0;
             
             const now = new Date();
             const timeStr = `[${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}]`;
@@ -291,19 +514,18 @@
             consoleLog.scrollTop = consoleLog.scrollHeight;
             
             logIndex++;
-            
-            // Одновременно запускаем удаление случайного чанка
             deleteRandomChunk();
         }
 
-        // Функция удаления случайного чанка
         function deleteRandomChunk() {
-            // Ищем еще не удаленный чанк
-            const availableChunks = chunksArray.filter(c => !c.classList.contains('deleted'));
-            if (availableChunks.length === 0) return;
+            const availableChunks = chunksArray.filter(c => !c.classList.contains('deleted') && !c.classList.contains('deleting'));
+            
+            if (availableChunks.length === 0) {
+                if (deletedCount >= totalChunks) triggerAbsoluteVoid();
+                return;
+            }
 
             const targetChunk = availableChunks[Math.floor(Math.random() * availableChunks.length)];
-            
             targetChunk.classList.remove('active');
             targetChunk.classList.add('deleting');
 
@@ -312,43 +534,54 @@
                 targetChunk.classList.add('deleted');
                 deletedCount++;
                 
-                // Считаем процент удаления
                 let percent = Math.floor((deletedCount / totalChunks) * 100);
                 erasedCounter.innerText = `Стерто: ${percent}%`;
                 
                 if (percent >= 100) {
-                    erasedCounter.innerText = "DIM1: ПОЛНОСТЬЮ СТЕРТ";
+                    clearInterval(deletionInterval);
+                    triggerAbsoluteVoid();
                 }
-            }, 1200);
+            }, 800); 
         }
 
-        // Запуск бесконечного процесса логов и стирания чанков
-        setInterval(addLog, 2000);
+        function triggerAbsoluteVoid() {
+            document.getElementById('main-site-screen').innerHTML = `
+                <div style="max-width: 800px; margin: 10% auto; padding: 20px; text-align: center; background: #000; border: 1px double #ff0055; box-shadow: 0 0 30px rgba(255,0,85,0.4); color: #fff;">
+                    <h1 style="color: #ff0055; font-size: 28px; margin-bottom: 20px; letter-spacing: 2px; text-shadow: 0 0 10px #ff0055;">[DIM1 // ИЗМЕРЕНИЕ АННИГИЛИРОВАНО]</h1>
+                    <p style="font-size: 14px; line-height: 1.6; color: #ccc; text-align: left; font-family: monospace; background: #050505; padding: 15px; border-left: 3px solid #ff0055;">
+                        > Сектора региона r.*.*.mca ... НЕ НАЙДЕНЫ<br>
+                        > Хэш-сумма Края ... [0x0000000000000000]<br>
+                        > Статус подключения: ИЗОЛЯЦИЯ<br><br>
+                        <span style="color: #9d4edd;">[SERAPHIM]:</span> Первозданная пустота восстановлена. Исходный код чист. 
+                        Однако leo__king успел выгрузить ядро резервной копии во внешнюю сеть до коллапса шины.<br><br>
+                        Ищи ключ спасения там, где все началось. Патч-код заблокирован на координатах старого спавна 2025 года.<br>
+                        След ведёт в шифр: <span style="color: #ffff00; font-weight: bold; background: #222; padding: 2px 5px;">LK_REVIVAL_STAGE_2</span>
+                    </p>
+                    <p style="font-size: 11px; color: #555; margin-top: 20px;">Сессия терминала разорвана удаленным узлом.</p>
+                </div>
+            `;
+        }
 
-        // Интерактив с инпутом: Серафим насмехается над игроком
         const seraphimAnswers = [
             "Доступ заблокирован. Твой код больше ничего не значит.",
             "Ты опоздал ровно на один год.",
             "Край принадлежит Пустоте. Прекрати попытки.",
-            "Твоя консоль мертва. Смотри, как рушится твой мир.",
-            "Вся власть здесь теперь принадлежит Серафиму."
+            "Твоя консоль мертва. Смотри, как рушится твой мир."
         ];
 
         termIn.addEventListener('keydown', function(e) {
             if (e.key === 'Enter') {
                 const val = termIn.value.trim();
-                if (!val) return;
+                if (!val || deletedCount >= totalChunks) return;
 
                 const now = new Date();
                 const timeStr = `[${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}]`;
 
-                // Эхо команды игрока
                 const userEntry = document.createElement('div');
                 userEntry.classList.add('log-entry');
                 userEntry.innerHTML = `<span class='log-time'>${timeStr}</span><span style='color:#00f5d4;'>[USER]:</span> ${val}`;
                 consoleLog.appendChild(userEntry);
 
-                // Ответ Серафима через 0.5 сек
                 setTimeout(() => {
                     const ans = seraphimAnswers[Math.floor(Math.random() * seraphimAnswers.length)];
                     const answerEntry = document.createElement('div');
