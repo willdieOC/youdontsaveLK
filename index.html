@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>END_SERAPHIM // TERMINAL</title>
+    <title>END_SERAPHIM // DECRYPTION_CORE</title>
     <style>
         * {
             box-sizing: border-box;
@@ -15,19 +15,19 @@
         body, html {
             width: 100%;
             height: 100%;
-            background-color: #05020a;
-            color: #33ff33; /* Зеленый ретро цвет в начале */
+            background-color: #030603;
+            color: #33ff33;
             overflow-x: hidden;
             user-select: none;
         }
 
-        /* Эффект ЭЛТ-монитора и шума */
+        /* Эффект ЭЛТ-монитора */
         body::before {
             content: " ";
             display: block;
             position: fixed;
             top: 0; left: 0; bottom: 0; right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.3) 50%), linear-gradient(90deg, rgba(0, 255, 0, 0.05), rgba(0, 255, 0, 0.02), rgba(0, 255, 0, 0.05));
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.35) 50%), linear-gradient(90deg, rgba(0, 255, 0, 0.04), rgba(0, 255, 0, 0.01), rgba(0, 255, 0, 0.04));
             z-index: 99999;
             background-size: 100% 4px, 6px 100%;
             pointer-events: none;
@@ -41,18 +41,17 @@
             align-items: center;
             width: 100%;
             height: 100vh;
-            background-color: #030a03;
             padding: 20px;
-            box-shadow: inset 0 0 100px rgba(0,255,0,0.3);
+            box-shadow: inset 0 0 100px rgba(0,255,0,0.25);
         }
 
         .crt-frame {
             width: 100%;
             max-width: 900px;
-            border: 4px solid #113311;
-            background: #001100;
+            border: 2px solid #22aa22;
+            background: #000b00;
             padding: 30px;
-            box-shadow: 0 0 30px rgba(0,255,0,0.1);
+            box-shadow: 0 0 40px rgba(0,255,0,0.15);
             position: relative;
         }
 
@@ -64,35 +63,37 @@
         }
 
         .puzzle-box {
-            border: 2px solid #33ff33;
-            padding: 15px;
+            border: 2px dashed #33ff33;
+            padding: 20px;
             text-align: center;
-            background: rgba(0,20,0,0.5);
+            background: rgba(0,15,0,0.6);
             cursor: pointer;
             transition: all 0.2s;
         }
 
         .puzzle-box:hover {
-            background: rgba(0,255,0,0.1);
-            box-shadow: 0 0 15px rgba(0,255,0,0.2);
-            transform: scale(1.02);
+            background: rgba(0,255,0,0.12);
+            box-shadow: 0 0 20px rgba(0,255,0,0.3);
+            border-style: solid;
         }
 
-        .puzzle-img-placeholder {
-            width: 100%;
-            height: 180px;
-            border: 1px dashed #33ff33;
+        .puzzle-icon {
+            font-size: 45px;
             margin-bottom: 15px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 40px;
+            text-shadow: 0 0 10px #33ff33;
+            animation: pulse-icon 2s infinite alternate;
+        }
+
+        @keyframes pulse-icon {
+            0% { opacity: 0.6; transform: scale(0.95); }
+            100% { opacity: 1; transform: scale(1.05); }
         }
 
         .puzzle-meta {
-            font-size: 12px;
+            font-size: 11px;
             letter-spacing: 1px;
-            color: #88ff88;
+            color: #33ff33;
+            font-weight: bold;
         }
 
         .input-group {
@@ -101,51 +102,57 @@
         }
 
         .input-label {
-            font-size: 13px;
-            margin-bottom: 5px;
+            font-size: 12px;
+            margin-bottom: 6px;
             display: block;
-            color: #33ff33;
+            color: #88ff88;
         }
 
         .crt-input {
             width: 100%;
             background: #000;
-            border: 1px solid #33ff33;
-            padding: 8px 12px;
+            border: 1px solid #22aa22;
+            padding: 10px 14px;
             color: #33ff33;
             font-family: inherit;
-            font-size: 16px;
+            font-size: 15px;
             outline: none;
-            text-transform: uppercase; /* Авто-капс для удобства */
+            text-transform: uppercase;
+        }
+        .crt-input:focus {
+            border-color: #33ff33;
+            box-shadow: 0 0 10px rgba(0,255,0,0.2);
         }
 
         .confirm-btn {
-            margin-top: 20px;
+            margin-top: 25px;
             background: #33ff33;
             color: #000;
             border: none;
-            padding: 10px 25px;
+            padding: 12px 30px;
             font-family: inherit;
             font-size: 14px;
             font-weight: bold;
             cursor: pointer;
-            transition: all 0.2s;
+            width: 100%;
+            letter-spacing: 2px;
         }
 
         .confirm-btn:hover {
             background: #aaffaa;
-            box-shadow: 0 0 15px #33ff33;
+            box-shadow: 0 0 20px #33ff33;
         }
 
-        /* Модальные окна для Пазлов (Вкладки как на ПК) */
+        /* Окна дешифровки (Стиль ОС) */
         .puzzle-modal {
             position: absolute;
-            top: 10%;
-            left: 15%;
-            width: 70%;
-            background: #001a00;
+            top: 5%;
+            left: 5%;
+            width: 90%;
+            height: 90%;
+            background: #000500;
             border: 2px solid #33ff33;
-            box-shadow: 0 0 35px rgba(0,255,0,0.4);
+            box-shadow: 0 0 40px rgba(0,255,0,0.5);
             display: none;
             flex-direction: column;
             z-index: 1000;
@@ -154,7 +161,7 @@
         .modal-header {
             background: #33ff33;
             color: #000;
-            padding: 5px 10px;
+            padding: 6px 12px;
             display: flex;
             justify-content: space-between;
             font-weight: bold;
@@ -168,12 +175,22 @@
         .modal-close:hover { background: #000; color: #33ff33; }
 
         .modal-body {
-            padding: 20px;
-            font-size: 13px;
-            line-height: 1.5;
-            color: #aaffaa;
-            max-height: 350px;
+            padding: 25px;
+            font-size: 12px;
+            line-height: 1.6;
+            color: #33ff33;
             overflow-y: auto;
+            flex-grow: 1;
+        }
+
+        .crypto-dump {
+            background: #021102;
+            border: 1px solid #115511;
+            padding: 15px;
+            margin: 15px 0;
+            color: #aaffaa;
+            word-break: break-all;
+            font-size: 13px;
         }
 
 
@@ -186,7 +203,7 @@
             flex-direction: column;
             gap: 20px;
             height: 100vh;
-            color: #b57cff; /* Переключаемся на фиолетовый */
+            color: #b57cff;
         }
 
         header {
@@ -254,12 +271,7 @@
             aspect-ratio: 1;
         }
 
-        .chunk {
-            background-color: #240c42;
-            border: 1px solid #3c166d;
-            transition: all 0.3s;
-        }
-
+        .chunk { background-color: #240c42; border: 1px solid #3c166d; transition: all 0.3s; }
         .chunk.active { background-color: #5c1d99; box-shadow: 0 0 4px #9d4edd; }
         .chunk.deleting { background-color: #ff0055; box-shadow: 0 0 8px #ff0055; animation: pulse 0.2s infinite alternate; }
         .chunk.deleted { background-color: #0a0214; border-color: #150527; box-shadow: none; }
@@ -319,59 +331,73 @@
 
     <div id="puzzle-screen">
         <div class="crt-frame">
-            <p style="font-size: 11px; color:#55aa55; margin-bottom: 15px;">SECURE CORE DECRYPTION SYSTEM // VER 0.82</p>
+            <p style="font-size: 11px; color:#55aa55; margin-bottom: 20px;">[OVERRIDE PROTOCOL] // СЕТЕВОЙ ПЕРЕХВАТ СЕРАФИМА</p>
             
             <div class="puzzle-container">
                 <div class="puzzle-box" onclick="openModal('modal-p1')">
-                    <div class="puzzle-img-placeholder">🕸️</div>
-                    <div class="puzzle-meta">PUZZLE 01 - UNSTABLE FREQUENCY</div>
+                    <div class="puzzle-icon">⚙️</div>
+                    <div class="puzzle-meta">PUZZLE 01 // UNSTABLE FREQUENCY</div>
                 </div>
                 <div class="puzzle-box" onclick="openModal('modal-p2')">
-                    <div class="puzzle-img-placeholder">🏁</div>
-                    <div class="puzzle-meta">PUZZLE 02 - MEMORY FRAGMENT</div>
+                    <div class="puzzle-icon">🧬</div>
+                    <div class="puzzle-meta">PUZZLE 02 // MEMORY FRAGMENT</div>
                 </div>
             </div>
 
             <div class="input-group">
-                <label class="input-label">PUZZLE 01 ANSWER (PATTERN KEY):</label>
-                <input type="text" class="crt-input" id="ans-p1" autocomplete="off" spellcheck="false" placeholder="...">
+                <label class="input-label">> ВВЕДИТЕ КЛЮЧ ШИФРА 01 (PATTERN KEY):</label>
+                <input type="text" class="crt-input" id="ans-p1" autocomplete="off" spellcheck="false" placeholder="Вживить сигнатуру...">
             </div>
             <div class="input-group">
-                <label class="input-label">PUZZLE 02 ANSWER (MATRIX CODE):</label>
-                <input type="text" class="crt-input" id="ans-p2" autocomplete="off" spellcheck="false" placeholder="...">
+                <label class="input-label">> ВВЕДИТЕ ДЕКОД 02 (MATRIX CODE):</label>
+                <input type="text" class="crt-input" id="ans-p2" autocomplete="off" spellcheck="false" placeholder="Вживить сигнатуру...">
             </div>
 
-            <button class="confirm-btn" onclick="verifyPuzzleAnswers()">CONFIRM</button>
-            <p id="error-msg" style="color: #ff3333; font-size:12px; margin-top:15px; display:none;">[ERROR]: Идентификационные хэши не совпадают. Доступ отклонен.</p>
+            <button class="confirm-btn" onclick="verifyPuzzleAnswers()">ИСПОЛНИТЬ ЯДРО</button>
+            <p id="error-msg" style="color: #ff3333; font-size:12px; margin-top:15px; display:none; text-align:center; text-shadow:0 0 5px #ff0000;">[КРИТИЧЕСКАЯ ОШИБКА]: ХЭШ-КОДЫ НЕ ВАЛИДНЫ. ДОСТУП ПЕРЕХВАЧЕН СЕРАФИМОМ.</p>
 
             <div class="puzzle-modal" id="modal-p1">
                 <div class="modal-header">
-                    <span>DECRYPTION WINDOW // PUZZLE_01.EXE</span>
-                    <span class="modal-close" onclick="closeModal('modal-p1', event)">X</span>
+                    <span>DECRYPTION ENGINE // UNSTABLE_FREQ.LOG</span>
+                    <span class="modal-close" onclick="closeModal('modal-p1', event)">[X]</span>
                 </div>
                 <div class="modal-body">
-                    <p style="color: #33ff33; margin-bottom: 10px;">[АНАЛИЗ СЕТИ ЧАСТОТЫ КРАЯ]</p>
-                    <p>Частотная сетка ядра Leaf искажена. Геометрия секторов Края завязана на фиксированной матрице деструкции.</p><br>
-                    <p style="background: rgba(0,255,0,0.1); padding: 8px; border-left: 2px solid #33ff33;">
-                        <b>Подсказка Архивариуса:</b> Вспомни общее количество секторов (чанков), которые разворачивает генератор Серафима в своей матрице 12x12 клеток.<br>
-                        Вычисли общую площадь поражения (12 умножить на 12).
-                    </p><br>
-                    <p style="font-size: 11px; color:#66aa66;">* Введите полученное числовое значение в поле ответа Pattern Key.</p>
+                    <p style="color: #fff; font-weight: bold;">[ПЕРЕХВАЧЕННЫЙ ЧАСТОТНЫЙ ДАМП]</p>
+                    <p>Поток данных генератора Leaf разбился на бинарные пакеты. Анализ структуры выявил циклическую кодировку со смещением.</p>
+                    
+                    <div class="crypto-dump">
+                        01011001 01010010 01001100 01000111
+                    </div>
+                    
+                    <p><b>АНАЛИЗ БОРТОВОГО КОМПЬЮТЕРА:</b></p>
+                    <p style="color: #88ff88;">
+                        Шаг 1: Переведите двоичный код (Binary) в текстовые символы ASCII.<br>
+                        Шаг 2: Полученная строка зашифрована классическим сдвигом (Шифр Цезаря). <br>
+                        Шаг 3: Величина сдвига равна количеству крыльев у Высших Серафимов в древних писаниях лора (сдвиг назад на 6 позиций в английском алфавите: A->U, B->V...).
+                    </p>
+                    <p style="margin-top: 15px; color: #55aa55;">*Разгадка для тебя (комьюнити не видит этого комментария): Бинарник переводится в YRLG. Сдвиг Цезаря на 6 букв назад дает слово VOID.*</p>
                 </div>
             </div>
 
             <div class="puzzle-modal" id="modal-p2">
                 <div class="modal-header">
-                    <span>DECRYPTION WINDOW // PUZZLE_02.EXE</span>
-                    <span class="modal-close" onclick="closeModal('modal-p2', event)">X</span>
+                    <span>DECRYPTION ENGINE // MEMORY_FRAGMENT.DAT</span>
+                    <span class="modal-close" onclick="closeModal('modal-p2', event)">[X]</span>
                 </div>
                 <div class="modal-body">
-                    <p style="color: #33ff33; margin-bottom: 10px;">[ФРАГМЕНТ ПАМЯТИ: КРИТИЧЕСКАЯ ДАТА]</p>
-                    <p>Матричный код содержит зашифрованную временную метку. Это точка невозврата всей операционной системы Legion-King's OS.</p><br>
-                    <p style="background: rgba(0,255,0,0.1); padding: 8px; border-left: 2px solid #33ff33;">
-                        <b>Подсказка лора:</b> Вспомни дату, указанную на таймере панели задач и в заметках блокнота. Это день, когда будет запущен критический сценарий LK VIII. Формат ввода: ДД.ММ.ГГГГ
-                    </p><br>
-                    <p style="font-size: 11px; color:#66aa66;">* Ответ: 24.06.2026</p>
+                    <p style="color: #fff; font-weight: bold;">[СЕКРЕТНЫЙ АРХИВ // ОШИБКА РАСШИРЕНИЯ MATRIX]</p>
+                    <p>Фрагмент поврежденного QR-кода оставил глубокий след в системной шине. Файл обернут в двойной контейнер защиты.</p>
+                    
+                    <div class="crypto-dump">
+                        TWpRdU1EWXVNalF3TmpJPQ==
+                    </div>
+                    
+                    <p><b>АНАЛИЗ БОРТОВОГО КОМПЬЮТЕРА:</b></p>
+                    <p style="color: #88ff88;">
+                        Контейнер использует стандартный сетевой алгоритм кодирования Base64. Попробуйте декодировать строку.<br>
+                        Полученный результат окажется Hex-строкой (Шестнадцатеричным кодом), хранящим системную дату судьбы сервера Legion-King в формате ДД.ММ.ГГГГ (через точки).
+                    </p>
+                    <p style="margin-top: 15px; color: #55aa55;">*Разгадка для тебя: Base64 дает "MjQuMDYuMjQwNjIi. Это Hex-кодированная строка. При переводе Hex в текст получается 24.06.2026 (финал вашего ивента).*</p>
                 </div>
             </div>
 
@@ -423,32 +449,35 @@
     </div>
 
     <script>
-        // --- ПАЗЛ-ИНТЕРАКТИВ ФУНКЦИИ ---
+        // --- МОДАЛЬНЫЕ ОКНА ПАЗЛОВ ---
         function openModal(id) {
             document.getElementById(id).style.display = 'flex';
         }
 
         function closeModal(id, event) {
-            event.stopPropagation(); // Чтобы не срабатывал клик по самому боксу
+            event.stopPropagation();
             document.getElementById(id).style.display = 'none';
         }
 
+        // --- ПРОВЕРКА ОТВЕТОВ ---
         function verifyPuzzleAnswers() {
-            const ans1 = document.getElementById('ans-p1').value.trim();
-            const ans2 = document.getElementById('ans-p2').value.trim();
+            const ans1 = document.getElementById('ans-p1').value.trim().toUpperCase();
+            const ans2 = document.getElementById('ans-p2').value.trim(); // Дату в верхний регистр не надо
 
-            // ПРАВИЛЬНЫЕ ОТВЕТЫ: 144 и 24.06.2026
-            if (ans1 === '144' && ans2 === '24.06.2026') {
+            // ОТВЕТЫ: "VOID" и "24.06.2026"
+            if (ans1 === 'VOID' && ans2 === '24.06.2026') {
                 document.getElementById('error-msg').style.display = 'none';
                 
-                // Переключаем экраны и тему
+                // Переключаем экраны
                 document.getElementById('puzzle-screen').style.display = 'none';
                 document.getElementById('main-site-screen').style.display = 'flex';
                 
-                // Меняем цвет шума ЭЛТ на фиолетовый
+                // Меняем цветовую тему шума и фона на фиолетовый
+                document.body.style.backgroundColor = '#05020a';
                 document.styleSheets[0].addRule('body', 'color: #b57cff !important;');
-                
-                // Запускаем уничтожение Края
+                document.styleSheets[0].addRule('body::before', 'background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06)) !important;');
+
+                // Запуск деструкции чанков Края
                 startEndDestruction();
             } else {
                 document.getElementById('error-msg').style.display = 'block';
@@ -456,25 +485,22 @@
         }
 
 
-        // --- ЛОГИКА СТИРАНИЯ КРАЯ (ИЗ ПРОШЛОГО ШАГА) ---
+        // --- ЛОГИКА УНИЧТОЖЕНИЯ СЕКТОРОВ КРАЯ ---
         const grid = document.getElementById('grid');
         const consoleLog = document.getElementById('console');
         const termIn = document.getElementById('term-in');
         const erasedCounter = document.getElementById('erased-counter');
         
-        const totalChunks = 144; // 12x12
+        const totalChunks = 144;
         let chunksArray = [];
         let deletedCount = 0;
         let deletionInterval = null;
 
         function startEndDestruction() {
-            // Генерируем сетку
             for (let i = 0; i < totalChunks; i++) {
                 const chunk = document.createElement('div');
                 chunk.classList.add('chunk');
-                if (Math.random() > 0.3) {
-                    chunk.classList.add('active');
-                }
+                if (Math.random() > 0.3) chunk.classList.add('active');
                 grid.appendChild(chunk);
                 chunksArray.push(chunk);
             }
@@ -557,11 +583,12 @@
                         Ищи ключ спасения там, где все началось. Патч-код заблокирован на координатах старого спавна 2025 года.<br>
                         След ведёт в шифр: <span style="color: #ffff00; font-weight: bold; background: #222; padding: 2px 5px;">LK_REVIVAL_STAGE_2</span>
                     </p>
-                    <p style="font-size: 11px; color: #555; margin-top: 20px;">Сессия терминала разорвана удаленным узлом.</p>
+                    <p style="font-size: 11px; color: #555; margin-top: 20px;">Сессия terminal разорвана удаленным узлом.</p>
                 </div>
             `;
         }
 
+        // Интерактив с консолью основного экрана
         const seraphimAnswers = [
             "Доступ заблокирован. Твой код больше ничего не значит.",
             "Ты опоздал ровно на один год.",
