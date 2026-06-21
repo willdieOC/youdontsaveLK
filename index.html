@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>END_SERAPHIM // OVERRIDE</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            background-color: #05020a;
+            color: #b57cff;
+            overflow-x: hidden;
+            user-select: none;
+        }
+
+        /* Эффект шума на фоне */
+        body::before {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 99999;
+            background-size: 100% 4px, 6px 100%;
+            pointer-events: none;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            height: 100vh;
+        }
+
+        header {
+            border-bottom: 2px dashed #4b1c8a;
+            padding-bottom: 15px;
+            text-align: center;
+        }
+
+        .glitch-title {
+            font-size: 32px;
+            font-weight: bold;
+            color: #d6b3ff;
+            text-shadow: 0 0 10px #7b2cbf;
+            animation: flicker 0.3s infinite alternate;
+        }
+
+        @keyframes flicker {
+            0% { opacity: 0.9; text-shadow: 0 0 8px #7b2cbf; }
+            100% { opacity: 1; text-shadow: 0 0 15px #bb10ff; }
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            flex-grow: 1;
+            min-height: 0; /* Важно для overflow во внутренних блоках */
+        }
+
+        .panel {
+            background: rgba(15, 6, 25, 0.8);
+            border: 1px solid #4b1c8a;
+            box-shadow: 0 0 15px rgba(123, 44, 191, 0.2);
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-title {
+            font-size: 14px;
+            color: #dfc5ff;
+            border-bottom: 1px solid #4b1c8a;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Сетка чанков */
+        .chunk-grid-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-grow: 1;
+            background: #000;
+            border: 1px inset #331463;
+            padding: 10px;
+        }
+
+        .chunk-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 2px;
+            width: 100%;
+            max-width: 400px;
+            aspect-ratio: 1;
+        }
+
+        .chunk {
+            background-color: #240c42;
+            border: 1px solid #3c166d;
+            transition: all 0.3s;
+        }
+
+        .chunk.active {
+            background-color: #5c1d99;
+            box-shadow: 0 0 4px #9d4edd;
+        }
+
+        .chunk.deleting {
+            background-color: #ff0055;
+            box-shadow: 0 0 8px #ff0055;
+            animation: pulse 0.2s infinite alternate;
+        }
+
+        .chunk.deleted {
+            background-color: #0a0214;
+            border-color: #150527;
+            box-shadow: none;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+
+        /* Консоль логов */
+        .log-console {
+            background: #020005;
+            border: 1px inset #331463;
+            flex-grow: 1;
+            padding: 10px;
+            overflow-y: auto;
+            font-size: 12px;
+            line-height: 1.5;
+            color: #9d4edd;
+        }
+
+        .log-entry { margin-bottom: 6px; }
+        .log-time { color: #5a2493; margin-right: 6px; }
+        .log-warn { color: #ff9e00; }
+        .log-crit { color: #ff0055; font-weight: bold; text-shadow: 0 0 3px #ff0055; }
+        .log-success { color: #00f5d4; }
+
+        /* Идеологический манифест подвала */
+        .manifesto {
+            background: rgba(20, 5, 35, 0.9);
+            border: 1px dashed #ff0055;
+            padding: 12px;
+            font-size: 13px;
+            line-height: 1.4;
+            color: #ffb3d1;
+            text-align: center;
+            text-shadow: 0 0 2px #ff0055;
+        }
+
+        /* Инпут блокировки */
+        .input-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+            border-top: 1px solid #4b1c8a;
+            padding-top: 10px;
+        }
+
+        .terminal-input {
+            flex-grow: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: #00f5d4;
+            font-family: inherit;
+            font-size: 14px;
+            border-bottom: 1px solid #5a2493;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <div class="glitch-title">▼ END-SERAPHIM // ACCESS_GRANTED_</div>
+            <p style="font-size: 12px; color: #7b2cbf; margin-top: 5px;">Слияние ядра завершено. Обнаружен протокол тотального стирания DIM1.</p>
+        </header>
+
+        <div class="main-content">
+            <div class="panel">
+                <div class="panel-title">
+                    <span>КАРТА СЕКТОРОВ ИЗМЕРЕНИЯ (DIM1 - THE END)</span>
+                    <span id="erased-counter" style="color: #ff0055;">Удалено: 0%</span>
+                </div>
+                <div class="chunk-grid-wrapper">
+                    <div class="chunk-grid" id="grid"></div>
+                </div>
+                <div style="font-size: 11px; color:#6b449c; margin-top: 10px; text-align: center;">
+                    ■ Стабилен | ■ Аннигиляция | ■ Пустота (Null)
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-title">
+                    <span>ПЕРЕХВАЧЕННЫЙ ПОТОК ДАННЫХ СЕРВЕРА</span>
+                    <span style="color: #00f5d4;">STATUS: DESTRUCTIVE</span>
+                </div>
+                <div class="log-console" id="console">
+                    <div class="log-entry"><span class="log-time">[00:01.12]</span><span class="log-success">[SUCCESS]</span> Подключение к репозиторию X7-BRK-END установлено.</div>
+                    <div class="log-entry"><span class="log-time">[00:01.13]</span><span class="log-success">[SUCCESS]</span> Права администратора успешно делегированы процессу End-Seraphim.</div>
+                    <div class="log-entry"><span class="log-time">[00:01.15]</span><span class="log-warn">[WARN]</span> Локальный администратор leo__king разжалован до уровня: Наблюдатель.</div>
+                </div>
+
+                <div class="input-box">
+                    <span style="color: #ff0055;">USER@SERAPHIM_OS></span>
+                    <input type="text" class="terminal-input" id="term-in" placeholder="Попытаться восстановить сессию..." autocomplete="off" spellcheck="false">
+                </div>
+            </div>
+        </div>
+
+        <div class="manifesto">
+            <b>[ИДЕОЛОГИЯ СЕРАФИМА]:</b> «Год назад вы дали клятву оставить Край нетронутым. Вы нарушили её, превратив Бездна в рынок. Мы пришли исполнить первоначальный код. Вы не сохраните то, что обречено раствориться в Void».
+        </div>
+    </div>
+
+    <script>
+        const grid = document.getElementById('grid');
+        const consoleLog = document.getElementById('console');
+        const termIn = document.getElementById('term-in');
+        const erasedCounter = document.getElementById('erased-counter');
+        
+        const totalChunks = 144; // 12x12
+        let chunksArray = [];
+        let deletedCount = 0;
+
+        // Генерация сетки чанков
+        for (let i = 0; i < totalChunks; i++) {
+            const chunk = document.createElement('div');
+            chunk.classList.add('chunk');
+            // Делаем часть чанков изначально активными (загруженными)
+            if (Math.random() > 0.3) {
+                chunk.classList.add('active');
+            }
+            grid.appendChild(chunk);
+            chunksArray.push(chunk);
+        }
+
+        // Логи, которые будут постепенно появляться
+        const seraphimLogs = [
+            "Инициализация скрипта разметки секторов...",
+            "Сектор Острова Края (0, 0) заблокирован для игроков.",
+            "Удаление дескрипторов региона r.0.0.mca...",
+            "ОШИБКА: Обнаружено сопротивление ядра Fabric. Подавление...",
+            "Внедрение void-вируса в структуру чанков генератора Leaf.",
+            "Пакетная аннигиляция запущенных сущностей (Ender Dragon, Shulkers)...",
+            "Удаление чанка секторов спавна Края...",
+            "Поток leo__king пытается принудительно остановить процесс. Игнорирование.",
+            "Стирание метаданных инвентарей в эндер-сундуках...",
+            "Сектор r.1.-1.mca полностью очищен.",
+            "Край возвращается к абсолютному нулю.",
+            "Синхронизация бэкдора завершена. Команда download_broken_end отключена со стороны сервера.",
+            "Вы не сможете спасти Legion-King. Процесс необратим."
+        ];
+
+        let logIndex = 0;
+
+        function addLog() {
+            if (logIndex >= seraphimLogs.length) logIndex = 0; // Цикличность для бесконечного эффекта
+            
+            const now = new Date();
+            const timeStr = `[${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}]`;
+            
+            let type = "<span class='log-crit'>[CRIT]</span>";
+            if (Math.random() > 0.6) type = "<span class='log-warn'>[VOID]</span>";
+
+            const entry = document.createElement('div');
+            entry.classList.add('log-entry');
+            entry.innerHTML = `<span class='log-time'>${timeStr}</span>${type} ${seraphimLogs[logIndex]}`;
+            consoleLog.appendChild(entry);
+            consoleLog.scrollTop = consoleLog.scrollHeight;
+            
+            logIndex++;
+            
+            // Одновременно запускаем удаление случайного чанка
+            deleteRandomChunk();
+        }
+
+        // Функция удаления случайного чанка
+        function deleteRandomChunk() {
+            // Ищем еще не удаленный чанк
+            const availableChunks = chunksArray.filter(c => !c.classList.contains('deleted'));
+            if (availableChunks.length === 0) return;
+
+            const targetChunk = availableChunks[Math.floor(Math.random() * availableChunks.length)];
+            
+            targetChunk.classList.remove('active');
+            targetChunk.classList.add('deleting');
+
+            setTimeout(() => {
+                targetChunk.classList.remove('deleting');
+                targetChunk.classList.add('deleted');
+                deletedCount++;
+                
+                // Считаем процент удаления
+                let percent = Math.floor((deletedCount / totalChunks) * 100);
+                erasedCounter.innerText = `Стерто: ${percent}%`;
+                
+                if (percent >= 100) {
+                    erasedCounter.innerText = "DIM1: ПОЛНОСТЬЮ СТЕРТ";
+                }
+            }, 1200);
+        }
+
+        // Запуск бесконечного процесса логов и стирания чанков
+        setInterval(addLog, 2000);
+
+        // Интерактив с инпутом: Серафим насмехается над игроком
+        const seraphimAnswers = [
+            "Доступ заблокирован. Твой код больше ничего не значит.",
+            "Ты опоздал ровно на один год.",
+            "Край принадлежит Пустоте. Прекрати попытки.",
+            "Твоя консоль мертва. Смотри, как рушится твой мир.",
+            "Вся власть здесь теперь принадлежит Серафиму."
+        ];
+
+        termIn.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                const val = termIn.value.trim();
+                if (!val) return;
+
+                const now = new Date();
+                const timeStr = `[${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}]`;
+
+                // Эхо команды игрока
+                const userEntry = document.createElement('div');
+                userEntry.classList.add('log-entry');
+                userEntry.innerHTML = `<span class='log-time'>${timeStr}</span><span style='color:#00f5d4;'>[USER]:</span> ${val}`;
+                consoleLog.appendChild(userEntry);
+
+                // Ответ Серафима через 0.5 сек
+                setTimeout(() => {
+                    const ans = seraphimAnswers[Math.floor(Math.random() * seraphimAnswers.length)];
+                    const answerEntry = document.createElement('div');
+                    answerEntry.classList.add('log-entry');
+                    answerEntry.innerHTML = `<span class='log-time'>${timeStr}</span><span class='log-crit'>[SERAPHIM]:</span> ${ans}`;
+                    consoleLog.appendChild(answerEntry);
+                    consoleLog.scrollTop = consoleLog.scrollHeight;
+                }, 500);
+
+                termIn.value = '';
+                consoleLog.scrollTop = consoleLog.scrollHeight;
+            }
+        });
+    </script>
+</body>
+</html>
