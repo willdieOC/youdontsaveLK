@@ -33,7 +33,7 @@
             pointer-events: none;
         }
 
-        /* --- ЭКРАН 1: РЕТРО ПАЗЛ СИСТЕМА --- */
+        /* --- ЭКРАН 1: ТЕРМИНАЛ ДЕШИФРОВАНИЯ --- */
         #puzzle-screen {
             display: flex;
             flex-direction: column;
@@ -154,7 +154,6 @@
         .panel { background: rgba(15, 6, 25, 0.8); border: 1px solid #4b1c8a; box-shadow: 0 0 15px rgba(123, 44, 191, 0.2); padding: 15px; display: flex; flex-direction: column; }
         .panel-title { font-size: 13px; color: #dfc5ff; border-bottom: 1px solid #4b1c8a; padding-bottom: 5px; margin-bottom: 15px; display: flex; justify-content: space-between; }
 
-        /* Визуал взлома слева */
         .breach-status-container {
             flex-grow: 1;
             display: flex;
@@ -320,6 +319,7 @@
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
         function closeModal(id, event) { event.stopPropagation(); document.getElementById(id).style.display = 'none'; }
 
+        // --- КРИПТОГРАФИЧЕСКИЙ ХЭШ SHA-256 ---
         async function getSHA256Hash(text) {
             const msgBuffer = new TextEncoder().encode(text);                    
             const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
@@ -327,16 +327,22 @@
             return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
         }
 
+        // --- ИСПРАВЛЕННАЯ ПРОВЕРКА ОТВЕТОВ ---
         async function verifyPuzzleAnswers() {
-            const ans1 = document.getElementById('ans-p1').value.trim().toUpperCase();
-            const ans2 = document.getElementById('ans-p2').value.trim();
+            // Считываем значения и жестко вырезаем абсолютно любые пробелы, табы и переносы строк (\s)
+            const ans1 = document.getElementById('ans-p1').value.replace(/\s+/g, '').toUpperCase();
+            const ans2 = document.getElementById('ans-p2').value.replace(/\s+/g, '');
 
+            // Вычисляем хэши от отфильтрованных строк
             const hashedInput1 = await getSHA256Hash(ans1);
             const hashedInput2 = await getSHA256Hash(ans2);
 
-            if (hashedInput1 === '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08' && 
-                hashedInput2 === '8435d03370b4791ea70ff38fb817b1b36965fa2863768d71249b6b797f74fb9b') {
-                
+            // Точные SHA-256 слепки ответов "VOID" и "24.06.2026"
+            const targetHash1 = '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08'; 
+            const targetHash2 = '8435d03370b4791ea70ff38fb817b1b36965fa2863768d71249b6b797f74fb9b'; 
+
+            // Сравнение
+            if (hashedInput1 === targetHash1 && hashedInput2 === targetHash2) {
                 document.getElementById('error-msg').style.display = 'none';
                 document.getElementById('puzzle-screen').style.display = 'none';
                 document.getElementById('main-site-screen').style.display = 'flex';
@@ -351,7 +357,7 @@
             }
         }
 
-        // --- ЛОГИКА СЮЖЕТНОГО ХАКИНГА И СЮЖЕТА ---
+        // --- ЛОГИКА СЮЖЕТНОГО ХАКИНГА ---
         const consoleLog = document.getElementById('console');
         const termIn = document.getElementById('term-in');
         const pFill = document.getElementById('p-fill');
@@ -362,7 +368,6 @@
         let breachInterval = null;
         let matrixInterval = null;
 
-        // Сюжетная цепочка логов Серафима
         const plotLogs = [
             { time: "00:01", type: "success", text: "Авторизация сущности END-SERAPHIM в регионе DIM1 прошла успешно." },
             { time: "00:04", type: "crit", text: "[ALERT] Существо получило полный доступ к возможностям ОПЕРАТОРА (/op) внутри END_DIM1!" },
@@ -381,11 +386,9 @@
         let plotIndex = 0;
 
         function startBreachSequence() {
-            // Постепенно выводим лог сюжета раз в 4 секунды
             executeNextPlotLog();
             breachInterval = setInterval(executeNextPlotLog, 4200);
 
-            // Бегущие случайные символы в левой панели (эффект подбора кода)
             matrixInterval = setInterval(() => {
                 let chars = "01ABCDEFUXMVK_@#$§%&!?";
                 let str = "";
@@ -412,17 +415,14 @@
                 consoleLog.appendChild(entry);
                 consoleLog.scrollTop = consoleLog.scrollHeight;
 
-                // Наращиваем прогрессбасс хакинга до кучи
                 breachPercent = Math.min(100, Math.floor((plotIndex + 1) * (100 / plotLogs.length)));
                 pFill.style.width = breachPercent + "%";
                 pText.innerText = `Взлом ядра защиты: ${breachPercent}%`;
 
-                // Динамически меняем статусы по ходу логов
                 if (plotIndex === 1) {
                     document.styleSheets[0].addRule('.breach-status-container', 'border-color: #ff0055 !important;');
                 }
                 if (plotIndex === 10) {
-                    // Намек на частичный подрыв защиты
                     document.getElementById('status-dim0').innerText = "ПОД УГРОЗОЙ (26.06)";
                     document.getElementById('status-dim0').className = "status-danger";
                     document.getElementById('status-dim1').innerText = "ПОД УГРОЗОЙ (26.06)";
@@ -431,7 +431,6 @@
 
                 plotIndex++;
             } else {
-                // Когда сюжетные логи прошлись, пускаем цикличные системные ошибки фоном
                 clearInterval(breachInterval);
                 breachInterval = setInterval(generateLoopingError, 3000);
             }
@@ -447,7 +446,6 @@
             consoleLog.scrollTop = consoleLog.scrollHeight;
         }
 
-        // Интерактивные ответы Серафима в консоли, если игрок что-то пишет
         const seraphimAnswers = [
             "Ваши попытки прерывания тщетны. Процесс захеширован в ядре.",
             "Прекрати слать пакеты. Ты лишь тратишь ресурсы консоли.",
