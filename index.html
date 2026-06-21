@@ -459,14 +459,29 @@
             document.getElementById(id).style.display = 'none';
         }
 
-        // --- ПРОВЕРКА ОТВЕТОВ ---
+        // --- МОБИЛЬНО-АДАПТИРОВАННАЯ ПРОВЕРКА ОТВЕТОВ ---
         function verifyPuzzleAnswers() {
-            const ans1 = document.getElementById('ans-p1').value.trim().toUpperCase();
-            const ans2 = document.getElementById('ans-p2').value.trim(); // Дату в верхний регистр не надо
+            // .replace(/\s+/g, '') — жестко удаляет ВСЕ пробелы, табы и переносы строк, в каком бы месте поля они ни находились
+            const ans1 = document.getElementById('ans-p1').value.replace(/\s+/g, '').toUpperCase();
+            const ans2 = document.getElementById('ans-p2').value.replace(/\s+/g, '');
 
-            // ОТВЕТЫ: "VOID" и "24.06.2026"
+            // Отладочный вывод в консоль (чтобы вы могли со смартфона через удаленный доступ увидеть, что пришло)
+            console.log("Очищенный ответ 1:", ans1);
+            console.log("Очищенный ответ 2:", ans2);
+
+            // Точная текстовая сверка очищенных данных
             if (ans1 === 'VOID' && ans2 === '24.06.2026') {
                 document.getElementById('error-msg').style.display = 'none';
+                document.getElementById('puzzle-screen').style.display = 'none';
+                
+                document.body.classList.add('seraphim-theme');
+                document.getElementById('main-site-screen').style.display = 'flex';
+
+                startBreachSequence();
+            } else {
+                document.getElementById('error-msg').style.display = 'block';
+            }
+        }
                 
                 // Переключаем экраны
                 document.getElementById('puzzle-screen').style.display = 'none';
