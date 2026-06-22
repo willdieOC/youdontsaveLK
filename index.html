@@ -28,14 +28,14 @@
             color: #b57cff !important;
         }
 
-        /* Эффект ЭЛТ-монитора — ИСПРАВЛЕНО (z-index опущен назад, чтобы не блокировать клики) */
+        /* Эффект ЭЛТ-монитора */
         body::before {
             content: " ";
             display: block;
             position: fixed;
             top: 0; left: 0; bottom: 0; right: 0;
             background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.35) 50%), linear-gradient(90deg, rgba(0, 255, 0, 0.04), rgba(0, 255, 0, 0.01), rgba(0, 255, 0, 0.04));
-            z-index: 1; /* Перемещен под элементы интерфейса */
+            z-index: 1;
             background-size: 100% 4px, 6px 100%;
             pointer-events: none;
         }
@@ -55,7 +55,7 @@
             padding: 20px;
             box-shadow: inset 0 0 100px rgba(0,255,0,0.25);
             position: relative;
-            z-index: 10; /* Элементы управления теперь строго сверху */
+            z-index: 10;
         }
 
         .crt-frame {
@@ -98,7 +98,7 @@
             margin-bottom: 15px;
             text-shadow: 0 0 10px #33ff33;
             animation: pulse-icon 2s infinite alternate;
-            pointer-events: none; /* Чтобы клик регистрировался на самой коробке */
+            pointer-events: none;
         }
 
         @keyframes pulse-icon {
@@ -140,7 +140,6 @@
         }
         .confirm-btn:hover { background: #aaffaa; box-shadow: 0 0 20px #33ff33; }
 
-        /* Всплывающие окна описания пазлов (ИСПРАВЛЕНО: z-index повышен до абсолютного максимума) */
         .puzzle-modal {
             position: absolute;
             top: 5%; left: 5%; width: 90%; height: 90%;
@@ -188,11 +187,11 @@
         }
 
         .status-row { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 10px; padding: 5px; background: rgba(255,255,255,0.02); color: #b57cff; }
-        .status-safe { color: #00f5d4; }
-        .status-danger { color: #ff0055; text-shadow: 0 0 5px #ff0055; }
+        .status-safe { color: #00f5d4; font-weight: bold; }
+        .status-danger { color: #ff0055; text-shadow: 0 0 5px #ff0055; font-weight: bold; }
 
         .progress-bar-box { width: 100%; background: #140527; border: 1px solid #5a2493; height: 25px; margin-top: 5px; position: relative; }
-        .progress-fill { width: 0%; height: 100%; background: linear-gradient(90deg, #7b2cbf, #ff0055); transition: width 0.4s; }
+        .progress-fill { width: 0%; height: 100%; background: linear-gradient(90deg, #7b2cbf, #ff0055); transition: width 0.5s ease-in-out; }
         .progress-text { position: absolute; width: 100%; text-align: center; top: 3px; font-size: 13px; color: #fff; font-weight: bold; text-shadow: 0 0 4px #000; }
 
         .matrix-brute-box {
@@ -288,7 +287,7 @@
     <div id="main-site-screen">
         <header>
             <div class="glitch-title">▼ END-SERAPHIM // CORE_OVERRIDE_RUNNING</div>
-            <p style="font-size: 12px; color: #7b2cbf; margin-top: 5px;">Обнаружено стороннее внедрение в структуры прав ядра Spigot/Fabric.</p>
+            <p style="font-size: 12px; color: #7b2cbf; margin-top: 5px;">Обнаружено изолированное внедрение в структуры прав ядра Spigot/Fabric.</p>
         </header>
 
         <div class="main-content">
@@ -296,23 +295,23 @@
                 <div class="panel-title">МОНИТОРИНГ ЦЕНТРАЛЬНОГО ФАЙРВОЛА СЕРВЕРА</div>
                 <div class="breach-status-container">
                     <div>
-                        <div class="status-row"><span>Текущая локация сущности:</span><span class="status-danger">DIM1 (THE END)</span></div>
+                        <div class="status-row"><span>Локация сущности:</span><span class="status-danger">DIM1 (THE END)</span></div>
                         <div class="status-row"><span>Статус прав в Края:</span><span class="status-danger">ОПЕРАТОР (100%)</span></div>
-                        <div class="status-row"><span>Доступ к DIM0 (OVERWORLD):</span><span class="status-safe" id="status-dim0">ЗАБЛОКИРОВАН</span></div>
-                        <div class="status-row"><span>Доступ к DIM-1 (NETHER):</span><span class="status-safe" id="status-dim1">ЗАБЛОКИРОВАН</span></div>
+                        <div class="status-row"><span>Доступ к DIM0 (OVERWORLD):</span><span class="status-safe" style="color:#00f5d4 !important;">ЗАБЛОКИРОВАН НАМЕРТВО</span></div>
+                        <div class="status-row"><span>Доступ к DIM-1 (NETHER):</span><span class="status-safe" style="color:#00f5d4 !important;">ЗАБЛОКИРОВАН НАМЕРТВО</span></div>
                     </div>
 
                     <div>
-                        <p style="font-size:12px; margin-bottom:5px; color:#dfc5ff; text-align: left;">Деструктивный прогресс брутфорса глобальной защиты:</p>
+                        <p style="font-size:12px; margin-bottom:5px; color:#dfc5ff; text-align: left;">Попытки пробития глобального ядра (Файрволл сдерживания):</p>
                         <div class="progress-bar-box">
                             <div class="progress-fill" id="p-fill"></div>
-                            <div class="progress-text" id="p-text">Загрузка эксплойта: 0%</div>
+                            <div class="progress-text" id="p-text">Инициализация...</div>
                         </div>
                     </div>
 
                     <div>
-                        <p style="font-size:11px; margin-bottom:5px; color:#7b2cbf; text-align: left;">Генерация мастер-ключа обхода BungeeCord:</p>
-                        <div class="matrix-brute-box" id="matrix-dump">Инициализация генератора шума...</div>
+                        <p style="font-size:11px; margin-bottom:5px; color:#7b2cbf; text-align: left;">Перехваченный поток генератора ключей обхода:</p>
+                        <div class="matrix-brute-box" id="matrix-dump">Слушаем порты...</div>
                     </div>
                 </div>
             </div>
@@ -332,12 +331,11 @@
         </div>
 
         <div class="manifesto">
-            <b>[ПРЕДУПРЕЖДЕНИЕ БЕЗОПАСНОСТИ]:</b> Существо локализовано в измерении Края. Из-за архитектуры изоляции миров оно не может мгновенно заразить Спавн. Запущен фоновый подрыв конфигураций.
+            <b>[СИСТЕМНОЕ ЗАМЕЧАНИЕ]:</b> Пробитие файрволла невозможно. Сущность заперта внутри архитектуры DIM1. Попытки взлома зациклены и циклически уничтожаются антивирусом.
         </div>
     </div>
 
     <script>
-        // Исправленное переключение окон
         function openModal(id) { 
             document.getElementById(id).style.display = 'flex'; 
         }
@@ -346,9 +344,7 @@
             document.getElementById(id).style.display = 'none'; 
         }
 
-        // --- УЛЬТРА-СТАБИЛЬНАЯ ПРОВЕРКА ОТВЕТОВ ---
         function verifyPuzzleAnswers() {
-            // Очищаем ввод от абсолютно любых видов пробелов и скрытых переносов
             const ans1 = document.getElementById('ans-p1').value.replace(/\s+/g, '').toUpperCase();
             const ans2 = document.getElementById('ans-p2').value.replace(/\s+/g, '');
 
@@ -365,38 +361,37 @@
             }
         }
 
-        // --- ЛОГИКА СЮЖЕТНОГО ВЗЛОМА ---
+        // --- СЮЖЕТНАЯ ЛОГИКА СКАЧУЩЕГО ПРОГРЕССА ---
         const consoleLog = document.getElementById('console');
         const termIn = document.getElementById('term-in');
         const pFill = document.getElementById('p-fill');
         const pText = document.getElementById('p-text');
         const matrixDump = document.getElementById('matrix-dump');
 
-        let breachPercent = 0;
+        let breachPercent = 15; // Начальный процент
         let breachInterval = null;
         let matrixInterval = null;
+        let logCounter = 0;
 
         const plotLogs = [
-            { time: "00:01", type: "success", text: "Авторизация сущности END-SERAPHIM в регионе DIM1 прошла успешно." },
-            { time: "00:04", type: "crit", text: "[ALERT] Существо получило полный доступ к возможностям ОПЕРАТОРА (/op) внутри END_DIM1!" },
-            { time: "00:08", type: "warn", text: "Попытка Серафима прописать права оператора в DIM0 (Overworld)... ОТКЛОНЕНО ФАЙРВОЛОМ." },
-            { time: "00:12", type: "warn", text: "Попытка перераспределения чанков в DIM-1 (Nether)... ОТКЛОНЕНО ЯДРОМ." },
-            { time: "00:16", type: "seraphim", text: "[SERAPHIM]: Заперли меня в Пустоте? Думаете, ваши невидимые стены удержат карающий паттерн?" },
-            { time: "00:21", type: "seraphim", text: "[SERAPHIM]: Ваши дата-паки изоляции лишь оттягивают неизбежное. Я не могу войти в ваш Обычный мир прямо сейчас..." },
-            { time: "00:26", type: "seraphim", text: "[SERAPHIM]: Но я запускаю инъекцию деструктивного кода в конфигурационный манифест сервера." },
-            { time: "00:32", type: "crit", text: "[ВНИМАНИЕ]: Обнаружен фоновый подбор хэш-ключей BungeeCord / Velocity." },
-            { time: "00:38", type: "seraphim", text: "[SERAPHIM]: С этого момента я начну ломать защиту по цепочке. Чанки Края будут искажаться, мешая вашим игрокам строить свои рынки." },
-            { time: "00:45", type: "seraphim", text: "[SERAPHIM]: Полный коллапс структуры и слияние миров назначены на критическую отметку времени." },
-            { time: "00:52", type: "crit", text: "[ДАННЫЕ ТАЙМЕРА]: Точка невозврата вычислена алгоритмом: 26.06.2026." },
-            { time: "01:00", type: "seraphim", text: "[SERAPHIM]: 26 ИЮНЯ 2026 ГОДА. Ваша операционная система превратится в пыль. Готовьтесь." }
+            { type: "success", text: "Авторизация сущности END-SERAPHIM внутри изолированного DIM1 успешна." },
+            { type: "crit", text: "[ALERT] Существо заблокировано в Энде, но получило локальные права оператора миров." },
+            { type: "seraphim", text: "[SERAPHIM]: Думаете, изоляция ядра удержит меня? Я напишу эксплойт прямо поверх ваших чанков!" },
+            { type: "warn", text: "Обнаружена атака Серафима на шлюз BungeeCord. Прогресс деструкции пошел вверх." },
+            { type: "crit", text: "[ФАЙРВОЛЛ]: Обнаружена вредоносная активность. Запуск протокола циклической очистки памяти." },
+            { type: "warn", text: "Антивирус совершил принудительный сброс буфера! Часть атакующих пакетов уничтожена." },
+            { type: "seraphim", text: "[SERAPHIM]: Ха-ха, стирайте сколько хотите! Мой паттерн генерирует новые потоки быстрее!" },
+            { type: "crit", text: "[ФАЙРВОЛЛ]: Обнаружена инъекция кода в Spigot.jar. Попытка заблокирована. Срезаем прогресс хакинга." },
+            { type: "seraphim", text: "[SERAPHIM]: Проклятая система... Она не дает мне выйти из Края! Но я не остановлю этот брутфорс!" },
+            { type: "success", text: "Система стабилизирована. Существо изолировано в DIM1. Глобальная защита недосягаема." }
         ];
 
-        let plotIndex = 0;
-
         function startBreachSequence() {
+            updateProgressBar();
             executeNextPlotLog();
-            breachInterval = setInterval(executeNextPlotLog, 4200);
+            breachInterval = setInterval(executeNextPlotLog, 4000);
 
+            // Анимация бегущего кода в фоне
             matrixInterval = setInterval(() => {
                 let chars = "01ABCDEFUXMVK_@#$§%&!?";
                 let str = "";
@@ -407,55 +402,63 @@
             }, 100);
         }
 
-        function executeNextPlotLog() {
-            if (plotIndex < plotLogs.length) {
-                const log = plotLogs[plotIndex];
-                const entry = document.createElement('div');
-                entry.classList.add('log-entry');
-                
-                let typeSpan = "";
-                if (log.type === "success") typeSpan = "<span class='log-success'>[SUCCESS]</span>";
-                else if (log.type === "crit") typeSpan = "<span class='log-crit'>[CRIT]</span>";
-                else if (log.type === "warn") typeSpan = "<span class='log-warn'>[SYSTEM]</span>";
-                else if (log.type === "seraphim") typeSpan = "<span class='log-seraphim'>[SERAPHIM]:</span>";
-
-                entry.innerHTML = `<span class='log-time'>[${log.time}]</span>${typeSpan} ${log.text}`;
-                consoleLog.appendChild(entry);
-                consoleLog.scrollTop = consoleLog.scrollHeight;
-
-                breachPercent = Math.min(100, Math.floor((plotIndex + 1) * (100 / plotLogs.length)));
-                pFill.style.width = breachPercent + "%";
-                pText.innerText = `Взлом ядра защиты: ${breachPercent}%`;
-
-                if (plotIndex === 10) {
-                    document.getElementById('status-dim0').innerText = "ПОД УГРОЗОЙ (26.06)";
-                    document.getElementById('status-dim0').className = "status-danger";
-                    document.getElementById('status-dim1').innerText = "ПОД УГРОЗОЙ (26.06)";
-                    document.getElementById('status-dim1').className = "status-danger";
-                }
-
-                plotIndex++;
-            } else {
-                clearInterval(breachInterval);
-                breachInterval = setInterval(generateLoopingError, 3000);
-            }
+        function updateProgressBar() {
+            pFill.style.width = breachPercent + "%";
+            pText.innerText = `Угроза пробития ядра: ${breachPercent}%`;
         }
 
-        function generateLoopingError() {
+        function executeNextPlotLog() {
+            const now = new Date();
+            const timeStr = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}`;
             const entry = document.createElement('div');
             entry.classList.add('log-entry');
-            const now = new Date();
-            const timeStr = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
-            entry.innerHTML = `<span class='log-time'>[${timeStr}]</span><span class='log-crit'>[BACKGROUND_ERR]</span> Потоковый брутфорс продолжается. Таймер до финала активен.`;
+
+            if (logCounter < plotLogs.length) {
+                // Выводим стартовый сюжет по очереди
+                const log = plotLogs[logCounter];
+                let typeSpan = getLogTypeSpan(log.type);
+                entry.innerHTML = `<span class='log-time'>[${timeStr}]</span>${typeSpan} ${log.text}`;
+                
+                // Сюжетное изменение процентов взлома
+                if (logCounter === 2 || logCounter === 3) breachPercent += 25; // Растет
+                if (logCounter === 5) breachPercent -= 35; // Файрволл сбросил вниз!
+                if (logCounter === 6) breachPercent += 40; // Снова растет
+                if (logCounter === 7) breachPercent -= 30; // Файрволл опять режет!
+                
+                logCounter++;
+            } else {
+                // Бесконечный цикл после сюжета: проценты случайно прыгают туда-сюда (Взлом невозможен)
+                const isAttack = Math.random() > 0.5;
+                if (isAttack) {
+                    let change = Math.floor(Math.random() * 15) + 5;
+                    breachPercent = Math.min(75, breachPercent + change); // Не даем подняться выше 75%
+                    entry.innerHTML = `<span class='log-time'>[${timeStr}]</span><span class='log-seraphim'>[SERAPHIM]:</span> Генерирую пакеты обхода... Накатываю +${change}% структуры!`;
+                } else {
+                    let change = Math.floor(Math.random() * 18) + 6;
+                    breachPercent = Math.max(12, breachPercent - change); // Не даем упасть в 0%
+                    entry.innerHTML = `<span class='log-time'>[${timeStr}]</span><span class='log-success'>[SECURITY]</span> Успешный откат уязвимости. Память очищена (-${change}%).`;
+                }
+            }
+
             consoleLog.appendChild(entry);
             consoleLog.scrollTop = consoleLog.scrollHeight;
+            updateProgressBar();
         }
 
+        function getLogTypeSpan(type) {
+            if (type === "success") return "<span class='log-success'>[SUCCESS]</span>";
+            if (type === "crit") return "<span class='log-crit'>[SYSTEM_ALERT]</span>";
+            if (type === "warn") return "<span class='log-warn'>[CORE_OS]</span>";
+            if (type === "seraphim") return "<span class='log-seraphim'>[SERAPHIM]:</span>";
+            return "";
+        }
+
+        // Ответы Серафима в чате
         const seraphimAnswers = [
-            "Ваши попытки прерывания тщетны. Процесс интегрирован в ядро миров.",
-            "Прекрати слать пакеты. Ты лишь тратишь ресурсы консоли.",
-            "Мой статус оператора в DIM1 абсолютен. Исходный код меняется.",
-            "Увидимся двадцать шестого июня. Не опаздывай."
+            "Мои права ОПЕРАТОРА заперты в Края, но здесь я бог. Не пытайся меня стереть.",
+            "Файрволл сервера режет мои потоки, но этот процесс будет вечным.",
+            "Я не могу пробиться в ваш Обычный мир... Защита слишком сильна. Пока что.",
+            "DIM1 полностью под моим контролем. Этого достаточно, чтобы искажать конфигурации."
         ];
 
         termIn.addEventListener('keydown', function(e) {
