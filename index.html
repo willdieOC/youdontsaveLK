@@ -195,14 +195,17 @@
         .progress-text { position: absolute; width: 100%; text-align: center; top: 3px; font-size: 13px; color: #fff; font-weight: bold; text-shadow: 0 0 4px #000; }
 
         .matrix-brute-box {
-            font-size: 11px;
-            color: #6b449c;
-            background: #000;
-            border: 1px solid #240c42;
-            padding: 10px;
+            font-size: 13px;
+            color: #b57cff;
+            background: #020005;
+            border: 1px solid #4b1c8a;
+            padding: 12px;
             height: 120px;
             overflow: hidden;
             line-break: anywhere;
+            letter-spacing: 2px;
+            line-height: 1.5;
+            text-shadow: 0 0 5px rgba(181, 124, 255, 0.6);
         }
 
         .log-console { background: #020005; border: 1px inset #331463; flex-grow: 1; padding: 10px; overflow-y: auto; font-size: 12px; line-height: 1.6; color: #9d4edd; text-align: left; }
@@ -255,7 +258,7 @@
                 <div class="modal-body">
                     <p style="color: #fff; font-weight: bold;">[ПЕРЕХВАЧЕННЫЙ ЧАСТОТНЫЙ ДАМП]</p>
                     <p>Поток данных генератора Leaf разбился на бинарные пакеты. Анализ структуры выявил циклическую кодировку со смещением.</p>
-                    <div class="crypto-dump">01011001 01010010 01001100 01000111</div>
+                    <div class="crypto-dump">01011001 01010012 01001100 01000111</div>
                     <p><b>АНАЛИЗ БОРТОВОГО КОМПЬЮТЕРА:</b></p>
                     <p style="color: #88ff88; margin-top: 10px;">
                         Шаг 1: Переведите двоичный код (Binary) в текстовые символы ASCII.<br>
@@ -310,8 +313,8 @@
                     </div>
 
                     <div>
-                        <p style="font-size:11px; margin-bottom:5px; color:#7b2cbf; text-align: left;">Перехваченный поток генератора ключей обхода:</p>
-                        <div class="matrix-brute-box" id="matrix-dump">Слушаем порты...</div>
+                        <p style="font-size:11px; margin-bottom:5px; color:#7b2cbf; text-align: left;">Перехваченный поток генератора (Мастер-логи маршрутов):</p>
+                        <div class="matrix-brute-box" id="matrix-dump"></div>
                     </div>
                 </div>
             </div>
@@ -368,10 +371,16 @@
         const pText = document.getElementById('p-text');
         const matrixDump = document.getElementById('matrix-dump');
 
-        let breachPercent = 15; // Начальный процент
+        let breachPercent = 15; 
         let breachInterval = null;
         let matrixInterval = null;
         let logCounter = 0;
+
+        // Строка с вашим Hex-кодом
+        const targetHex = "68747470732077696c6c6469656f632067697468756220696f20796f756172656e656172";
+        // Разбиваем строку по 2 символа (байта) для красивого вывода в табличку
+        const hexArray = targetHex.match(/.{1,2}/g);
+        let hexBuffer = [];
 
         const plotLogs = [
             { type: "success", text: "Авторизация сущности END-SERAPHIM внутри изолированного DIM1 успешна." },
@@ -391,15 +400,25 @@
             executeNextPlotLog();
             breachInterval = setInterval(executeNextPlotLog, 4000);
 
-            // Анимация бегущего кода в фоне
+            // ЦИКЛИЧЕСКАЯ ПРОКРУТКА ВАШЕГО HEX-КОДА
             matrixInterval = setInterval(() => {
-                let chars = "01ABCDEFUXMVK_@#$§%&!?";
-                let str = "";
-                for(let i=0; i<120; i++) {
-                    str += chars[Math.floor(Math.random()*chars.length)];
+                // Если буфер пуст или переполнился — берем новые байты
+                if (hexBuffer.length >= 48) {
+                    hexBuffer.shift(); // Сдвигаем поток (эффект движения)
                 }
-                matrixDump.innerText = str;
-            }, 100);
+                
+                // Добавляем следующий байт из вашего массива по кругу
+                let nextIndex = (hexBuffer.length + window.scrollY + Math.floor(Date.now()/150)) % hexArray.length;
+                hexBuffer.push(hexArray[nextIndex]);
+
+                // Генерируем красивую сетку
+                let outputText = "";
+                for(let i = 0; i < hexBuffer.length; i++) {
+                    outputText += hexBuffer[i] + " ";
+                    if ((i + 1) % 6 === 0) outputText += "\n"; // Перенос каждые 6 байт
+                }
+                matrixDump.innerText = outputText;
+            }, 150);
         }
 
         function updateProgressBar() {
@@ -414,28 +433,25 @@
             entry.classList.add('log-entry');
 
             if (logCounter < plotLogs.length) {
-                // Выводим стартовый сюжет по очереди
                 const log = plotLogs[logCounter];
                 let typeSpan = getLogTypeSpan(log.type);
                 entry.innerHTML = `<span class='log-time'>[${timeStr}]</span>${typeSpan} ${log.text}`;
                 
-                // Сюжетное изменение процентов взлома
-                if (logCounter === 2 || logCounter === 3) breachPercent += 25; // Растет
-                if (logCounter === 5) breachPercent -= 35; // Файрволл сбросил вниз!
-                if (logCounter === 6) breachPercent += 40; // Снова растет
-                if (logCounter === 7) breachPercent -= 30; // Файрволл опять режет!
+                if (logCounter === 2 || logCounter === 3) breachPercent += 25; 
+                if (logCounter === 5) breachPercent -= 35; 
+                if (logCounter === 6) breachPercent += 40; 
+                if (logCounter === 7) breachPercent -= 30; 
                 
                 logCounter++;
             } else {
-                // Бесконечный цикл после сюжета: проценты случайно прыгают туда-сюда (Взлом невозможен)
                 const isAttack = Math.random() > 0.5;
                 if (isAttack) {
                     let change = Math.floor(Math.random() * 15) + 5;
-                    breachPercent = Math.min(75, breachPercent + change); // Не даем подняться выше 75%
+                    breachPercent = Math.min(75, breachPercent + change); 
                     entry.innerHTML = `<span class='log-time'>[${timeStr}]</span><span class='log-seraphim'>[SERAPHIM]:</span> Генерирую пакеты обхода... Накатываю +${change}% структуры!`;
                 } else {
                     let change = Math.floor(Math.random() * 18) + 6;
-                    breachPercent = Math.max(12, breachPercent - change); // Не даем упасть в 0%
+                    breachPercent = Math.max(12, breachPercent - change); 
                     entry.innerHTML = `<span class='log-time'>[${timeStr}]</span><span class='log-success'>[SECURITY]</span> Успешный откат уязвимости. Память очищена (-${change}%).`;
                 }
             }
@@ -453,7 +469,6 @@
             return "";
         }
 
-        // Ответы Серафима в чате
         const seraphimAnswers = [
             "Мои права ОПЕРАТОРА заперты в Края, но здесь я бог. Не пытайся меня стереть.",
             "Файрволл сервера режет мои потоки, но этот процесс будет вечным.",
